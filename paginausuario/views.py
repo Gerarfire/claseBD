@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from .models import DatosPersonales, ExperienciaLaboral, Reconocimiento, CursoRealizado, ProductoAcademico, ProductoLaboral
+from django.contrib.auth.models import User
 
 def pagina_bienvenida(request):
     return HttpResponse("<h1>HOJA DE VIDA</h1><a href='/hoja_vida/'>Ver Hoja de Vida</a>")
@@ -27,3 +28,10 @@ def hoja_vida(request):
         'productos_laborales': productos_laborales,
     }
     return render(request, 'paginausuario/hoja_vida.html', context)
+
+def create_superuser(request):
+    if not User.objects.filter(username='admin').exists():
+        User.objects.create_superuser('admin', 'admin@example.com', 'admin123')
+        return HttpResponse("Superusuario 'admin' creado con contraseña 'admin123'. Ahora elimina esta URL.")
+    else:
+        return HttpResponse("El superusuario ya existe.")
