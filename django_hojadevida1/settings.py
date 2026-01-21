@@ -9,6 +9,8 @@ https://docs.djangoproject.com/en/6.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
+from dotenv import load_dotenv
+load_dotenv()
 
 from pathlib import Path
 import os
@@ -77,13 +79,27 @@ WSGI_APPLICATION = 'django_hojadevida1.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
+import dj_database_url
+import os
+
+import dj_database_url
+
 DATABASES = {
-    'default': dj_database_url.config(
-        default='postgresql://basededatosnube_5dwy_user:VQaTTWvkekQD5pyOjzUeHzjm327qJO4T@dpg-d5o3omq4d50c73c1g30g-a/basededatosnube_5dwy',
-        conn_max_age=600
-    
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'basededatosnube_5dwy',
+        'USER': 'basededatosnube_5dwy_user',
+        'PASSWORD': 'VQaTTWvkekQD5pyOjzUeHzjm327qJO4T',
+        'HOST': 'dpg-d5o3omq4d50c73c1g30g-a.oregon-postgres.render.com',
+        'PORT': '5432',
+        'OPTIONS': {
+            'sslmode': 'require',
+        },
+    }
 }
+
+
+
 
 
 # Password validation
