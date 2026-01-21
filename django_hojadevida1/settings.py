@@ -79,24 +79,20 @@ WSGI_APPLICATION = 'django_hojadevida1.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
-import dj_database_url
-import os
-
-import dj_database_url
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'basededatosnube_5dwy',
-        'USER': 'basededatosnube_5dwy_user',
-        'PASSWORD': 'VQaTTWvkekQD5pyOjzUeHzjm327qJO4T',
-        'HOST': 'dpg-d5o3omq4d50c73c1g30g-a.oregon-postgres.render.com',
-        'PORT': '5432',
-        'OPTIONS': {
-            'sslmode': 'require',
-        },
+if not DEBUG:
+    DATABASES = {
+        'default': dj_database_url.config(
+            conn_max_age=600,
+            conn_health_checks=True,
+        )
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 
 
