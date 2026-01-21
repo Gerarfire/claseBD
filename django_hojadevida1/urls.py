@@ -19,5 +19,6 @@ from django.urls import path
 from paginausuario import views
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('',views.pagina_bienvenida)
+    path('', views.pagina_bienvenida),
+    path('hoja_vida/', views.hoja_vida, name='hoja_vida'),
 ]

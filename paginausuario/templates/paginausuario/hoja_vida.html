@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hoja de Vida - {{ perfil.nombres }} {{ perfil.apellidos }}</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        h1, h2 { color: #333; }
+        .section { margin-bottom: 30px; }
+        .item { margin-bottom: 15px; padding: 10px; border: 1px solid #ddd; border-radius: 5px; }
+        .item h3 { margin: 0; }
+    </style>
+</head>
+<body>
+    <h1>Hoja de Vida</h1>
+    <p><strong>Descripción del Perfil:</strong> {{ perfil.descripcionperfil }}</p>
+    <p><strong>Nombre:</strong> {{ perfil.nombres }} {{ perfil.apellidos }}</p>
+
+    <div class="section">
+        <h2>Experiencia Laboral</h2>
+        {% for exp in experiencias %}
+        <div class="item">
+            <h3>{{ exp.cargodesempenado }} en {{ exp.nombrempresa }}</h3>
+            <p><strong>Lugar:</strong> {{ exp.lugarempresa }}</p>
+            <p><strong>Email:</strong> {{ exp.emailempresa|default:"N/A" }}</p>
+            <p><strong>Sitio Web:</strong> {{ exp.sitiowebempresa|default:"N/A" }}</p>
+            <p><strong>Contacto:</strong> {{ exp.nombrecontactoempresarial|default:"N/A" }} - {{ exp.telefonocontactoempresarial|default:"N/A" }}</p>
+            <p><strong>Fecha Inicio:</strong> {{ exp.fechainiciogestion }}</p>
+            <p><strong>Fecha Fin:</strong> {{ exp.fechafingestion|default:"Actualidad" }}</p>
+            <p><strong>Funciones:</strong> {{ exp.descripcionfunciones }}</p>
+        </div>
+        {% empty %}
+        <p>No hay experiencias laborales registradas.</p>
+        {% endfor %}
+    </div>
+
+    <div class="section">
+        <h2>Reconocimientos</h2>
+        {% for rec in reconocimientos %}
+        <div class="item">
+            <h3>{{ rec.tiporeconocimiento }}</h3>
+            <p><strong>Fecha:</strong> {{ rec.fechareconocimiento }}</p>
+            <p><strong>Descripción:</strong> {{ rec.descripcionreconocimiento }}</p>
+            <p><strong>Entidad:</strong> {{ rec.entidadpatrocinadora }}</p>
+            <p><strong>Contacto:</strong> {{ rec.nombrecontactoauspicia|default:"N/A" }} - {{ rec.telefonocontactoauspicia|default:"N/A" }}</p>
+        </div>
+        {% empty %}
+        <p>No hay reconocimientos registrados.</p>
+        {% endfor %}
+    </div>
+
+    <div class="section">
+        <h2>Cursos Realizados</h2>
+        {% for curso in cursos %}
+        <div class="item">
+            <h3>{{ curso.nombrecurso }}</h3>
+            <p><strong>Fecha Inicio:</strong> {{ curso.fechainicio }}</p>
+            <p><strong>Fecha Fin:</strong> {{ curso.fechafin|default:"En curso" }}</p>
+            <p><strong>Total Horas:</strong> {{ curso.totalhoras }}</p>
+            <p><strong>Descripción:</strong> {{ curso.descripcioncurso }}</p>
+            <p><strong>Entidad:</strong> {{ curso.entidadpatrocinadora }}</p>
+            <p><strong>Contacto:</strong> {{ curso.nombrecontactoauspicia|default:"N/A" }} - {{ curso.telefonocontactoauspicia|default:"N/A" }}</p>
+        </div>
+        {% empty %}
+        <p>No hay cursos registrados.</p>
+        {% endfor %}
+    </div>
+
+    <div class="section">
+        <h2>Productos Académicos</h2>
+        {% for prod in productos_academicos %}
+        <div class="item">
+            <h3>{{ prod.nombrerecurso }}</h3>
+            <p><strong>Clasificador:</strong> {{ prod.clasificador }}</p>
+            <p><strong>Descripción:</strong> {{ prod.descripcion }}</p>
+        </div>
+        {% empty %}
+        <p>No hay productos académicos registrados.</p>
+        {% endfor %}
+    </div>
+
+    <div class="section">
+        <h2>Productos Laborales</h2>
+        {% for prod in productos_laborales %}
+        <div class="item">
+            <h3>{{ prod.nombreproducto }}</h3>
+            <p><strong>Fecha:</strong> {{ prod.fechaproducto }}</p>
+            <p><strong>Descripción:</strong> {{ prod.descripcion }}</p>
+        </div>
+        {% empty %}
+        <p>No hay productos laborales registrados.</p>
+        {% endfor %}
+    </div>
+
+    <a href="/">Volver al Inicio</a>
+</body>
+</html>
