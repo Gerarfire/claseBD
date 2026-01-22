@@ -21,5 +21,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.pagina_bienvenida),
     path('hoja_vida/', views.hoja_vida, name='hoja_vida'),
+    path('hoja_vida/pdf/', views.hoja_vida_pdf, name='hoja_vida_pdf'),
     path('create_superuser/', views.create_superuser),
 ]
