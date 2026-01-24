@@ -53,7 +53,7 @@
         }
         .nav {
             background: #f8f9fa;
-            padding: 25px 15px;
+            padding: 40px 20px;
             text-align: center;
             border-bottom: 1px solid #e9ecef;
         }
@@ -64,18 +64,22 @@
             display: flex;
             justify-content: center;
             flex-wrap: wrap;
+            gap: 15px;
         }
         .nav li {
-            margin: 0 20px;
+            margin: 0;
         }
         .nav a {
             color: #4facfe;
             text-decoration: none;
-            padding: 12px 20px;
-            border-radius: 20px;
+            padding: 15px 30px;
+            border-radius: 25px;
             transition: background 0.3s, color 0.3s;
             font-weight: 500;
-            font-size: 1.1em;
+            font-size: 1.2em;
+            display: inline-block;
+            min-width: 150px;
+            text-align: center;
         }
         .nav a:hover, .nav a.active {
             background: #4facfe;
@@ -141,6 +145,8 @@
             <div class="header-content">
                 {% if perfil.foto_perfil %}
                 <img src="{{ perfil.foto_perfil.url }}" alt="Foto de perfil" class="profile-photo">
+                {% else %}
+                <img src="https://i.pinimg.com/originals/e8/6f/46/e86f46ea77c37158aac339a6a4cbf69e.jpg" alt="Foto de perfil" class="profile-photo">
                 {% endif %}
                 <h1>{{ perfil.nombres }} {{ perfil.apellidos }}</h1>
                 <p>{{ perfil.descripcionperfil }}</p>
