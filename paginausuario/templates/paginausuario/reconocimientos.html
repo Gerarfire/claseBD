@@ -171,9 +171,7 @@
                 <p>No hay reconocimientos registrados.</p>
                 {% endfor %}
             </div>
-            <a href="{% url 'reconocimientos_pdf' %}" class="download-btn">Imprimir Reconocimientos (PDF)</a>
-            <br>
-            <a href="{% url 'hoja_vida_pdf' %}" class="download-btn">Descargar Hoja de Vida Completa (PDF)</a>
+            <button onclick="window.print()" class="download-btn">Imprimir Reconocimientos</button>
             <br>
             <a href="{% url 'hoja_vida' %}" class="back-link">← Volver al Inicio</a>
         </div>

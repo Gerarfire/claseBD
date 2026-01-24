@@ -174,9 +174,7 @@
                 <p>No hay experiencias laborales registradas.</p>
                 {% endfor %}
             </div>
-            <a href="{% url 'experiencias_pdf' %}" class="download-btn">Imprimir Experiencias Laborales (PDF)</a>
-            <br>
-            <a href="{% url 'hoja_vida_pdf' %}" class="download-btn">Descargar Hoja de Vida Completa (PDF)</a>
+            <button onclick="window.print()" class="download-btn">Imprimir Experiencias Laborales</button>
             <br>
             <a href="{% url 'hoja_vida' %}" class="back-link">← Volver al Inicio</a>
         </div>

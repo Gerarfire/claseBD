@@ -173,9 +173,7 @@
                 <p>No hay cursos registrados.</p>
                 {% endfor %}
             </div>
-            <a href="{% url 'cursos_pdf' %}" class="download-btn">Imprimir Cursos Realizados (PDF)</a>
-            <br>
-            <a href="{% url 'hoja_vida_pdf' %}" class="download-btn">Descargar Hoja de Vida Completa (PDF)</a>
+            <button onclick="window.print()" class="download-btn">Imprimir Cursos Realizados</button>
             <br>
             <a href="{% url 'hoja_vida' %}" class="back-link">← Volver al Inicio</a>
         </div>

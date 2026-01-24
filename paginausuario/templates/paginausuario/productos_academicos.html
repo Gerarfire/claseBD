@@ -169,9 +169,7 @@
                 <p>No hay productos académicos registrados.</p>
                 {% endfor %}
             </div>
-            <a href="{% url 'productos_academicos_pdf' %}" class="download-btn">Imprimir Productos Académicos (PDF)</a>
-            <br>
-            <a href="{% url 'hoja_vida_pdf' %}" class="download-btn">Descargar Hoja de Vida Completa (PDF)</a>
+            <button onclick="window.print()" class="download-btn">Imprimir Productos Académicos</button>
             <br>
             <a href="{% url 'hoja_vida' %}" class="back-link">← Volver al Inicio</a>
         </div>

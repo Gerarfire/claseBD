@@ -169,9 +169,7 @@
                 <p>No hay productos laborales registrados.</p>
                 {% endfor %}
             </div>
-            <a href="{% url 'productos_laborales_pdf' %}" class="download-btn">Imprimir Productos Laborales (PDF)</a>
-            <br>
-            <a href="{% url 'hoja_vida_pdf' %}" class="download-btn">Descargar Hoja de Vida Completa (PDF)</a>
+            <button onclick="window.print()" class="download-btn">Imprimir Productos Laborales</button>
             <br>
             <a href="{% url 'hoja_vida' %}" class="back-link">← Volver al Inicio</a>
         </div>
