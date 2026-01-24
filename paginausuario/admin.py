@@ -5,7 +5,21 @@ from .models import DatosPersonales, ExperienciaLaboral, Reconocimiento, CursoRe
 
 @admin.register(DatosPersonales)
 class DatosPersonalesAdmin(admin.ModelAdmin):
-    list_display = ('nombres', 'apellidos', 'descripcionperfil', 'perfilactivo', 'foto_perfil')
+    list_display = ('nombres', 'apellidos', 'descripcionperfil', 'numerocedula', 'sexo', 'perfilactivo')
+    fieldsets = (
+        ('Información Básica', {
+            'fields': ('nombres', 'apellidos', 'descripcionperfil', 'foto_perfil', 'perfilactivo')
+        }),
+        ('Información Personal', {
+            'fields': ('nacionalidad', 'lugarnacimiento', 'fechanacimiento', 'numerocedula', 'sexo', 'estadocivil', 'licenciaconducir')
+        }),
+        ('Contacto', {
+            'fields': ('telefonoconvencional', 'telefonofijo', 'sitioweb')
+        }),
+        ('Direcciones', {
+            'fields': ('direcciontrabajo', 'direcciondomiciliaria')
+        }),
+    )
 
 @admin.register(ExperienciaLaboral)
 class ExperienciaLaboralAdmin(admin.ModelAdmin):

@@ -4,18 +4,58 @@ from datetime import date
 
 #BD tabla datos_personales
 class DatosPersonales(models.Model):
+    SEXO_CHOICES = [
+        ('H', 'Hombre'),
+        ('M', 'Mujer'),
+    ]
+
     idperfil = models.AutoField(primary_key=True)
     descripcionperfil = models.CharField(max_length=50)
-    perfilactivo = models.IntegerField()
+    perfilactivo = models.IntegerField(default=1)
+
     apellidos = models.CharField(max_length=60)
     nombres = models.CharField(max_length=60)
+
+    nacionalidad = models.CharField(max_length=20, blank=True, null=True)
+    lugarnacimiento = models.CharField(max_length=60, blank=True, null=True)
+    fechanacimiento = models.DateField(blank=True, null=True)
+
+    numerocedula = models.CharField(
+        max_length=10,
+        unique=True,
+        blank=True,
+        null=True
+    )
+
+    sexo = models.CharField(
+        max_length=1,
+        choices=SEXO_CHOICES,
+        blank=True,
+        null=True
+    )
+
+    estadocivil = models.CharField(max_length=50, blank=True, null=True)
+    licenciaconducir = models.CharField(max_length=6, blank=True, null=True)
+
+    telefonoconvencional = models.CharField(max_length=15, blank=True, null=True)
+    telefonofijo = models.CharField(max_length=15, blank=True, null=True)
+
+    direcciontrabajo = models.CharField(max_length=50, blank=True, null=True)
+    direcciondomiciliaria = models.CharField(max_length=50, blank=True, null=True)
+
+    sitioweb = models.CharField(max_length=60, blank=True, null=True)
     foto_perfil = models.ImageField(upload_to='fotos_perfil/', blank=True, null=True)
 
     class Meta:
-        db_table = 'datos_personales'
+        db_table = 'datospersonales'
 
     def __str__(self):
         return f"{self.nombres} {self.apellidos}"
+
+    def clean(self):
+        today = date.today()
+        if self.fechanacimiento and self.fechanacimiento > today:
+            raise ValidationError('La fecha de nacimiento no puede ser futura.')
 
 #BD tabla experiencia laboral
 class ExperienciaLaboral(models.Model):
