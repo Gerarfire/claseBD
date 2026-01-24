@@ -66,15 +66,16 @@
             flex-wrap: wrap;
         }
         .nav li {
-            margin: 0 10px;
+            margin: 0 20px;
         }
         .nav a {
             color: #4facfe;
             text-decoration: none;
-            padding: 10px 15px;
+            padding: 12px 20px;
             border-radius: 20px;
             transition: background 0.3s, color 0.3s;
             font-weight: 500;
+            font-size: 1.1em;
         }
         .nav a:hover, .nav a.active {
             background: #4facfe;
@@ -170,6 +171,8 @@
                 <p>No hay reconocimientos registrados.</p>
                 {% endfor %}
             </div>
+            <a href="{% url 'reconocimientos_pdf' %}" class="download-btn">Imprimir Reconocimientos (PDF)</a>
+            <br>
             <a href="{% url 'hoja_vida_pdf' %}" class="download-btn">Descargar Hoja de Vida Completa (PDF)</a>
             <br>
             <a href="{% url 'hoja_vida' %}" class="back-link">← Volver al Inicio</a>

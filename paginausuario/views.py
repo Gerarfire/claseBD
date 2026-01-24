@@ -73,6 +73,150 @@ def productos_laborales(request):
     context = {'perfil': perfil, 'productos_laborales': productos_laborales}
     return render(request, 'paginausuario/productos_laborales.html', context)
 
+def experiencias_pdf(request):
+    perfil = DatosPersonales.objects.filter(perfilactivo=1).first()
+    if not perfil:
+        return HttpResponse("No hay perfil activo configurado.")
+    experiencias = ExperienciaLaboral.objects.filter(idperfilconqueestaactivo=perfil, activarparaqueseveaenfront=True)
+
+    buffer = BytesIO()
+    doc = SimpleDocTemplate(buffer, pagesize=letter)
+    styles = getSampleStyleSheet()
+    story = []
+
+    title_style = ParagraphStyle('Title', parent=styles['Title'], fontSize=18, spaceAfter=20)
+    story.append(Paragraph(f"Experiencias Laborales - {perfil.nombres} {perfil.apellidos}", title_style))
+    story.append(Spacer(1, 12))
+
+    if experiencias:
+        for exp in experiencias:
+            story.append(Paragraph(f"<b>{exp.cargodesempenado}</b> en {exp.nombrempresa}", styles['Normal']))
+            story.append(Paragraph(f"Lugar: {exp.lugarempresa}", styles['Normal']))
+            story.append(Paragraph(f"Fecha Inicio: {exp.fechainiciogestion} - Fecha Fin: {exp.fechafingestion or 'Actualidad'}", styles['Normal']))
+            story.append(Paragraph(f"Funciones: {exp.descripcionfunciones}", styles['Normal']))
+            story.append(Spacer(1, 12))
+
+    doc.build(story)
+    buffer.seek(0)
+    response = HttpResponse(buffer, content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="experiencias_laborales.pdf"'
+    return response
+
+def reconocimientos_pdf(request):
+    perfil = DatosPersonales.objects.filter(perfilactivo=1).first()
+    if not perfil:
+        return HttpResponse("No hay perfil activo configurado.")
+    reconocimientos = Reconocimiento.objects.filter(idperfilconqueestaactivo=perfil, activarparaqueseveaenfront=True)
+
+    buffer = BytesIO()
+    doc = SimpleDocTemplate(buffer, pagesize=letter)
+    styles = getSampleStyleSheet()
+    story = []
+
+    title_style = ParagraphStyle('Title', parent=styles['Title'], fontSize=18, spaceAfter=20)
+    story.append(Paragraph(f"Reconocimientos - {perfil.nombres} {perfil.apellidos}", title_style))
+    story.append(Spacer(1, 12))
+
+    if reconocimientos:
+        for rec in reconocimientos:
+            story.append(Paragraph(f"<b>{rec.tiporeconocimiento}</b>", styles['Normal']))
+            story.append(Paragraph(f"Fecha: {rec.fechareconocimiento}", styles['Normal']))
+            story.append(Paragraph(f"Descripción: {rec.descripcionreconocimiento}", styles['Normal']))
+            story.append(Paragraph(f"Entidad: {rec.entidadpatrocinadora}", styles['Normal']))
+            story.append(Spacer(1, 12))
+
+    doc.build(story)
+    buffer.seek(0)
+    response = HttpResponse(buffer, content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="reconocimientos.pdf"'
+    return response
+
+def cursos_pdf(request):
+    perfil = DatosPersonales.objects.filter(perfilactivo=1).first()
+    if not perfil:
+        return HttpResponse("No hay perfil activo configurado.")
+    cursos = CursoRealizado.objects.filter(idperfilconqueestaactivo=perfil, activarparaqueseveaenfront=True)
+
+    buffer = BytesIO()
+    doc = SimpleDocTemplate(buffer, pagesize=letter)
+    styles = getSampleStyleSheet()
+    story = []
+
+    title_style = ParagraphStyle('Title', parent=styles['Title'], fontSize=18, spaceAfter=20)
+    story.append(Paragraph(f"Cursos Realizados - {perfil.nombres} {perfil.apellidos}", title_style))
+    story.append(Spacer(1, 12))
+
+    if cursos:
+        for curso in cursos:
+            story.append(Paragraph(f"<b>{curso.nombrecurso}</b>", styles['Normal']))
+            story.append(Paragraph(f"Fecha Inicio: {curso.fechainicio} - Fecha Fin: {curso.fechafin or 'En curso'}", styles['Normal']))
+            story.append(Paragraph(f"Horas: {curso.totalhoras}", styles['Normal']))
+            story.append(Paragraph(f"Descripción: {curso.descripcioncurso}", styles['Normal']))
+            story.append(Paragraph(f"Entidad: {curso.entidadpatrocinadora}", styles['Normal']))
+            story.append(Spacer(1, 12))
+
+    doc.build(story)
+    buffer.seek(0)
+    response = HttpResponse(buffer, content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="cursos_realizados.pdf"'
+    return response
+
+def productos_academicos_pdf(request):
+    perfil = DatosPersonales.objects.filter(perfilactivo=1).first()
+    if not perfil:
+        return HttpResponse("No hay perfil activo configurado.")
+    productos_academicos = ProductoAcademico.objects.filter(idperfilconqueestaactivo=perfil, activarparaqueseveaenfront=True)
+
+    buffer = BytesIO()
+    doc = SimpleDocTemplate(buffer, pagesize=letter)
+    styles = getSampleStyleSheet()
+    story = []
+
+    title_style = ParagraphStyle('Title', parent=styles['Title'], fontSize=18, spaceAfter=20)
+    story.append(Paragraph(f"Productos Académicos - {perfil.nombres} {perfil.apellidos}", title_style))
+    story.append(Spacer(1, 12))
+
+    if productos_academicos:
+        for prod in productos_academicos:
+            story.append(Paragraph(f"<b>{prod.nombrerecurso}</b>", styles['Normal']))
+            story.append(Paragraph(f"Clasificador: {prod.clasificador}", styles['Normal']))
+            story.append(Paragraph(f"Descripción: {prod.descripcion}", styles['Normal']))
+            story.append(Spacer(1, 12))
+
+    doc.build(story)
+    buffer.seek(0)
+    response = HttpResponse(buffer, content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="productos_academicos.pdf"'
+    return response
+
+def productos_laborales_pdf(request):
+    perfil = DatosPersonales.objects.filter(perfilactivo=1).first()
+    if not perfil:
+        return HttpResponse("No hay perfil activo configurado.")
+    productos_laborales = ProductoLaboral.objects.filter(idperfilconqueestaactivo=perfil, activarparaqueseveaenfront=True)
+
+    buffer = BytesIO()
+    doc = SimpleDocTemplate(buffer, pagesize=letter)
+    styles = getSampleStyleSheet()
+    story = []
+
+    title_style = ParagraphStyle('Title', parent=styles['Title'], fontSize=18, spaceAfter=20)
+    story.append(Paragraph(f"Productos Laborales - {perfil.nombres} {perfil.apellidos}", title_style))
+    story.append(Spacer(1, 12))
+
+    if productos_laborales:
+        for prod in productos_laborales:
+            story.append(Paragraph(f"<b>{prod.nombreproducto}</b>", styles['Normal']))
+            story.append(Paragraph(f"Fecha: {prod.fechaproducto}", styles['Normal']))
+            story.append(Paragraph(f"Descripción: {prod.descripcion}", styles['Normal']))
+            story.append(Spacer(1, 12))
+
+    doc.build(story)
+    buffer.seek(0)
+    response = HttpResponse(buffer, content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="productos_laborales.pdf"'
+    return response
+
 def hoja_vida_pdf(request):
     # Obtener el perfil activo
     perfil = DatosPersonales.objects.filter(perfilactivo=1).first()
