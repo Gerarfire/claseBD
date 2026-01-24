@@ -19,8 +19,12 @@ from django.urls import path
 from paginausuario import views
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.hoja_vida, name='hoja_vida'),  # Cambiar a cargar la hoja de vida directamente
-    path('hoja_vida/', views.hoja_vida, name='hoja_vida_full'),  # Alias opcional
+    path('', views.hoja_vida, name='hoja_vida'),  # Página principal con perfil y menú
+    path('experiencias/', views.experiencias, name='experiencias'),
+    path('reconocimientos/', views.reconocimientos, name='reconocimientos'),
+    path('cursos/', views.cursos, name='cursos'),
+    path('productos-academicos/', views.productos_academicos, name='productos_academicos'),
+    path('productos-laborales/', views.productos_laborales, name='productos_laborales'),
     path('hoja_vida/pdf/', views.hoja_vida_pdf, name='hoja_vida_pdf'),
     path('create_superuser/', views.create_superuser),
 ]

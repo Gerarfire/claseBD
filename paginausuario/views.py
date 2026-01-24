@@ -33,6 +33,46 @@ def hoja_vida(request):
     }
     return render(request, 'paginausuario/hoja_vida.html', context)
 
+def experiencias(request):
+    perfil = DatosPersonales.objects.filter(perfilactivo=1).first()
+    if not perfil:
+        return HttpResponse("No hay perfil activo configurado.")
+    experiencias = ExperienciaLaboral.objects.filter(idperfilconqueestaactivo=perfil, activarparaqueseveaenfront=True)
+    context = {'perfil': perfil, 'experiencias': experiencias}
+    return render(request, 'paginausuario/experiencias.html', context)
+
+def reconocimientos(request):
+    perfil = DatosPersonales.objects.filter(perfilactivo=1).first()
+    if not perfil:
+        return HttpResponse("No hay perfil activo configurado.")
+    reconocimientos = Reconocimiento.objects.filter(idperfilconqueestaactivo=perfil, activarparaqueseveaenfront=True)
+    context = {'perfil': perfil, 'reconocimientos': reconocimientos}
+    return render(request, 'paginausuario/reconocimientos.html', context)
+
+def cursos(request):
+    perfil = DatosPersonales.objects.filter(perfilactivo=1).first()
+    if not perfil:
+        return HttpResponse("No hay perfil activo configurado.")
+    cursos = CursoRealizado.objects.filter(idperfilconqueestaactivo=perfil, activarparaqueseveaenfront=True)
+    context = {'perfil': perfil, 'cursos': cursos}
+    return render(request, 'paginausuario/cursos.html', context)
+
+def productos_academicos(request):
+    perfil = DatosPersonales.objects.filter(perfilactivo=1).first()
+    if not perfil:
+        return HttpResponse("No hay perfil activo configurado.")
+    productos_academicos = ProductoAcademico.objects.filter(idperfilconqueestaactivo=perfil, activarparaqueseveaenfront=True)
+    context = {'perfil': perfil, 'productos_academicos': productos_academicos}
+    return render(request, 'paginausuario/productos_academicos.html', context)
+
+def productos_laborales(request):
+    perfil = DatosPersonales.objects.filter(perfilactivo=1).first()
+    if not perfil:
+        return HttpResponse("No hay perfil activo configurado.")
+    productos_laborales = ProductoLaboral.objects.filter(idperfilconqueestaactivo=perfil, activarparaqueseveaenfront=True)
+    context = {'perfil': perfil, 'productos_laborales': productos_laborales}
+    return render(request, 'paginausuario/productos_laborales.html', context)
+
 def hoja_vida_pdf(request):
     # Obtener el perfil activo
     perfil = DatosPersonales.objects.filter(perfilactivo=1).first()
