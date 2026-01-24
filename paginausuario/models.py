@@ -77,7 +77,7 @@ class ExperienciaLaboral(models.Model):
     fechainiciogestion = models.DateField()
     fechafingestion = models.DateField(blank=True, null=True)
     descripcionfunciones = models.CharField(max_length=100)
-    activarparaqueseveaenfront = models.BooleanField(default=True)
+    activarparaqueseveaenfront = models.BooleanField(default=True, verbose_name="Activar para que se vea en front")
     rutacertificado = models.CharField(max_length=100, blank=True, null=True)
 
     class Meta:
@@ -121,7 +121,7 @@ class Reconocimiento(models.Model):
     entidadpatrocinadora = models.CharField(max_length=100)
     nombrecontactoauspicia = models.CharField(max_length=100, blank=True, null=True)
     telefonocontactoauspicia = models.CharField(max_length=60, blank=True, null=True)
-    activarparaqueseveaenfront = models.BooleanField(default=True)
+    activarparaqueseveaenfront = models.BooleanField(default=True, verbose_name="Activar para que se vea en front")
     rutacertificado = models.CharField(max_length=100, blank=True, null=True)
 
     class Meta:
@@ -154,7 +154,7 @@ class CursoRealizado(models.Model):
     nombrecontactoauspicia = models.CharField(max_length=100, blank=True, null=True)
     telefonocontactoauspicia = models.CharField(max_length=60, blank=True, null=True)
     emailempresapatrocinadora = models.CharField(max_length=60, blank=True, null=True)
-    activarparaqueseveaenfront = models.BooleanField(default=True)
+    activarparaqueseveaenfront = models.BooleanField(default=True, verbose_name="Activar para que se vea en front")
     rutacertificado = models.CharField(max_length=100, blank=True, null=True)
 
     class Meta:
@@ -186,7 +186,7 @@ class ProductoAcademico(models.Model):
     nombrerecurso = models.CharField(max_length=100)
     clasificador = models.CharField(max_length=100)
     descripcion = models.CharField(max_length=100)
-    activarparaqueseveaenfront = models.BooleanField(default=True)
+    activarparaqueseveaenfront = models.BooleanField(default=True, verbose_name="Activar para que se vea en front")
 
     class Meta:
         db_table = 'productosacademicos'
@@ -208,7 +208,7 @@ class ProductoLaboral(models.Model):
     nombreproducto = models.CharField(max_length=100)
     fechaproducto = models.DateField()
     descripcion = models.CharField(max_length=100)
-    activarparaqueseveaenfront = models.BooleanField(default=True)
+    activarparaqueseveaenfront = models.BooleanField(default=True, verbose_name="Activar para que se vea en front")
 
     class Meta:
         db_table = 'productoslaborales'
