@@ -7,6 +7,7 @@ class DatosPersonales(models.Model):
     perfilactivo = models.IntegerField()
     apellidos = models.CharField(max_length=60)
     nombres = models.CharField(max_length=60)
+    foto_perfil = models.ImageField(upload_to='fotos_perfil/', blank=True, null=True)
 
     class Meta:
         db_table = 'datos_personales'

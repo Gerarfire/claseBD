@@ -5,7 +5,7 @@ from .models import DatosPersonales, ExperienciaLaboral, Reconocimiento, CursoRe
 
 @admin.register(DatosPersonales)
 class DatosPersonalesAdmin(admin.ModelAdmin):
-    list_display = ('nombres', 'apellidos', 'descripcionperfil', 'perfilactivo')
+    list_display = ('nombres', 'apellidos', 'descripcionperfil', 'perfilactivo', 'foto_perfil')
 
 @admin.register(ExperienciaLaboral)
 class ExperienciaLaboralAdmin(admin.ModelAdmin):
