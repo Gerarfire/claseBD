@@ -1,4 +1,6 @@
 from django.db import models
+from django.core.exceptions import ValidationError
+from datetime import date
 
 #BD tabla datos_personales
 class DatosPersonales(models.Model):
@@ -44,6 +46,15 @@ class ExperienciaLaboral(models.Model):
     def __str__(self):
         return f"{self.cargodesempenado} - {self.nombrempresa}"
 
+    def clean(self):
+        today = date.today()
+        if self.fechainiciogestion > today:
+            raise ValidationError('La fecha de inicio no puede ser futura.')
+        if self.fechafingestion and self.fechafingestion > today:
+            raise ValidationError('La fecha de fin no puede ser futura.')
+        if self.fechafingestion and self.fechafingestion < self.fechainiciogestion:
+            raise ValidationError('La fecha de fin no puede ser anterior a la fecha de inicio.')
+
 
 #BD tabla reconocimientos
 class Reconocimiento(models.Model):
@@ -79,6 +90,11 @@ class Reconocimiento(models.Model):
     def __str__(self):
         return f"{self.tiporeconocimiento} - {self.entidadpatrocinadora}"
 
+    def clean(self):
+        today = date.today()
+        if self.fechareconocimiento > today:
+            raise ValidationError('La fecha del reconocimiento no puede ser futura.')
+
 #BD tabla cursos realizados
 class CursoRealizado(models.Model):
     idcursorealizado = models.AutoField(primary_key=True)
@@ -106,6 +122,15 @@ class CursoRealizado(models.Model):
 
     def __str__(self):
         return f"{self.nombrecurso} ({self.totalhoras} horas)"
+
+    def clean(self):
+        today = date.today()
+        if self.fechainicio > today:
+            raise ValidationError('La fecha de inicio del curso no puede ser futura.')
+        if self.fechafin and self.fechafin > today:
+            raise ValidationError('La fecha de fin del curso no puede ser futura.')
+        if self.fechafin and self.fechafin < self.fechainicio:
+            raise ValidationError('La fecha de fin no puede ser anterior a la fecha de inicio.')
 
 
 #BD tabla productos academicos
@@ -150,6 +175,11 @@ class ProductoLaboral(models.Model):
 
     def __str__(self):
         return self.nombreproducto
+
+    def clean(self):
+        today = date.today()
+        if self.fechaproducto > today:
+            raise ValidationError('La fecha del producto laboral no puede ser futura.')
 
 
 
