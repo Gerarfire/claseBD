@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from .models import DatosPersonales, ExperienciaLaboral, Reconocimiento, CursoRealizado, ProductoAcademico, ProductoLaboral
+from .models import DatosPersonales, ExperienciaLaboral, Reconocimiento, CursoRealizado, ProductoAcademico, ProductoLaboral, VentaGarage
 from django.contrib.auth.models import User
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
@@ -72,6 +72,14 @@ def productos_laborales(request):
     productos_laborales = ProductoLaboral.objects.filter(idperfilconqueestaactivo=perfil, activarparaqueseveaenfront=True)
     context = {'perfil': perfil, 'productos_laborales': productos_laborales}
     return render(request, 'paginausuario/productos_laborales.html', context)
+
+def ventas_garage(request):
+    perfil = DatosPersonales.objects.filter(perfilactivo=1).first()
+    if not perfil:
+        return HttpResponse("No hay perfil activo configurado.")
+    ventas_garage = VentaGarage.objects.filter(idperfilconqueestaactivo=perfil, activarparaqueseveaenfront=True)
+    context = {'perfil': perfil, 'ventas_garage': ventas_garage}
+    return render(request, 'paginausuario/ventas_garage.html', context)
 
 def experiencias_pdf(request):
     perfil = DatosPersonales.objects.filter(perfilactivo=1).first()
@@ -215,6 +223,35 @@ def productos_laborales_pdf(request):
     buffer.seek(0)
     response = HttpResponse(buffer, content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename="productos_laborales.pdf"'
+    return response
+
+def ventas_garage_pdf(request):
+    perfil = DatosPersonales.objects.filter(perfilactivo=1).first()
+    if not perfil:
+        return HttpResponse("No hay perfil activo configurado.")
+    ventas_garage = VentaGarage.objects.filter(idperfilconqueestaactivo=perfil, activarparaqueseveaenfront=True)
+
+    buffer = BytesIO()
+    doc = SimpleDocTemplate(buffer, pagesize=letter)
+    styles = getSampleStyleSheet()
+    story = []
+
+    title_style = ParagraphStyle('Title', parent=styles['Title'], fontSize=18, spaceAfter=20)
+    story.append(Paragraph(f"Ventas Garage - {perfil.nombres} {perfil.apellidos}", title_style))
+    story.append(Spacer(1, 12))
+
+    if ventas_garage:
+        for venta in ventas_garage:
+            story.append(Paragraph(f"<b>{venta.nombreproducto}</b>", styles['Normal']))
+            story.append(Paragraph(f"Estado: {venta.estadoproducto}", styles['Normal']))
+            story.append(Paragraph(f"Valor: ${venta.valordelbien}", styles['Normal']))
+            story.append(Paragraph(f"Descripción: {venta.descripcion}", styles['Normal']))
+            story.append(Spacer(1, 12))
+
+    doc.build(story)
+    buffer.seek(0)
+    response = HttpResponse(buffer, content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="ventas_garage.pdf"'
     return response
 
 def hoja_vida_pdf(request):

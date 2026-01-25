@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Productos Laborales - {{ perfil.nombres }} {{ perfil.apellidos }}</title>
+    <title>Ventas Garage - {{ perfil.nombres }} {{ perfil.apellidos }}</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -49,93 +49,108 @@
         .header p {
             margin: 10px 0 0;
             font-size: 1.2em;
-            opacity: 0.9;
         }
         .nav {
             background: #f8f9fa;
-            padding: 40px 20px;
-            text-align: center;
             border-bottom: 1px solid #e9ecef;
+            padding: 0;
         }
         .nav ul {
             list-style: none;
-            padding: 0;
             margin: 0;
+            padding: 0;
             display: flex;
             justify-content: center;
             flex-wrap: wrap;
-            gap: 15px;
         }
         .nav li {
             margin: 0;
         }
         .nav a {
-            color: #4facfe;
+            display: block;
+            padding: 15px 20px;
             text-decoration: none;
-            padding: 15px 30px;
-            border-radius: 25px;
-            transition: background 0.3s, color 0.3s;
+            color: #495057;
             font-weight: 500;
-            font-size: 1.2em;
-            display: inline-block;
-            min-width: 150px;
-            text-align: center;
+            transition: all 0.3s ease;
         }
         .nav a:hover, .nav a.active {
-            background: #4facfe;
+            background: #007bff;
             color: white;
         }
         .content {
-            padding: 30px;
+            padding: 40px;
         }
         .section {
             margin-bottom: 40px;
-            border-left: 5px solid #4facfe;
-            padding-left: 20px;
         }
         .section h2 {
-            color: #4facfe;
+            color: #007bff;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
             font-size: 1.8em;
         }
         .item {
-            margin-bottom: 20px;
-            padding: 15px;
             background: #f8f9fa;
-            border-radius: 8px;
-            border-left: 4px solid #4facfe;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
         }
         .item h3 {
+            color: #007bff;
             margin-top: 0;
-            color: #333;
+            font-size: 1.4em;
         }
-        .download-btn {
+        .item p {
+            margin: 5px 0;
+        }
+        .pdf-button {
             display: inline-block;
-            background: #4facfe;
+            background: #28a745;
             color: white;
-            padding: 12px 24px;
+            padding: 10px 20px;
             text-decoration: none;
-            border-radius: 25px;
-            font-weight: 500;
+            border-radius: 5px;
             margin-top: 20px;
+            transition: background 0.3s ease;
         }
-        .download-btn:hover {
-            background: #00c6fb;
+        .pdf-button:hover {
+            background: #218838;
         }
-        .back-link {
-            display: inline-block;
-            color: #4facfe;
-            text-decoration: none;
-            margin-top: 20px;
-            font-weight: 500;
+        .no-items {
+            text-align: center;
+            color: #6c757d;
+            font-style: italic;
+            padding: 40px;
         }
-        .back-link:hover {
-            text-decoration: underline;
+        @media (max-width: 768px) {
+            .nav ul {
+                flex-direction: column;
+            }
+            .nav li {
+                text-align: center;
+            }
+            .header h1 {
+                font-size: 2em;
+            }
+            .content {
+                padding: 20px;
+            }
         }
         @media print {
-            body { background: white; }
-            .container { box-shadow: none; }
-            .nav { display: none; }
-            .download-btn, .back-link { display: none; }
+            body {
+                background: white;
+                color: black;
+            }
+            .nav, .pdf-button {
+                display: none;
+            }
+            .container {
+                box-shadow: none;
+                border-radius: 0;
+            }
         }
     </style>
 </head>
@@ -145,8 +160,6 @@
             <div class="header-content">
                 {% if perfil.foto_perfil %}
                 <img src="{{ perfil.foto_perfil.url }}" alt="Foto de perfil" class="profile-photo">
-                {% else %}
-                <img src="https://i.pinimg.com/originals/e8/6f/46/e86f46ea77c37158aac339a6a4cbf69e.jpg" alt="Foto de perfil" class="profile-photo">
                 {% endif %}
                 <h1>{{ perfil.nombres }} {{ perfil.apellidos }}</h1>
                 <p>{{ perfil.descripcionperfil }}</p>
@@ -159,26 +172,27 @@
                 <li><a href="{% url 'reconocimientos' %}">Reconocimientos</a></li>
                 <li><a href="{% url 'cursos' %}">Cursos</a></li>
                 <li><a href="{% url 'productos_academicos' %}">Productos Académicos</a></li>
-                <li><a href="{% url 'productos_laborales' %}" class="active">Productos Laborales</a></li>
-                <li><a href="{% url 'ventas_garage' %}">Ventas Garage</a></li>
+                <li><a href="{% url 'productos_laborales' %}">Productos Laborales</a></li>
+                <li><a href="{% url 'ventas_garage' %}" class="active">Ventas Garage</a></li>
             </ul>
         </nav>
         <div class="content">
             <div class="section">
-                <h2>Productos Laborales</h2>
-                {% for prod in productos_laborales %}
+                <h2>Ventas Garage</h2>
+                {% for venta in ventas_garage %}
                 <div class="item">
-                    <h3>{{ prod.nombreproducto }}</h3>
-                    <p><strong>Fecha:</strong> {{ prod.fechaproducto }}</p>
-                    <p><strong>Descripción:</strong> {{ prod.descripcion }}</p>
+                    <h3>{{ venta.nombreproducto }}</h3>
+                    <p><strong>Estado:</strong> {{ venta.estadoproducto }}</p>
+                    <p><strong>Valor:</strong> ${{ venta.valordelbien }}</p>
+                    <p><strong>Descripción:</strong> {{ venta.descripcion }}</p>
                 </div>
                 {% empty %}
-                <p>No hay productos laborales registrados.</p>
+                <div class="no-items">
+                    <p>No hay ventas de garage disponibles.</p>
+                </div>
                 {% endfor %}
             </div>
-            <button onclick="window.print()" class="download-btn">Imprimir Productos Laborales</button>
-            <br>
-            <a href="{% url 'hoja_vida' %}" class="back-link">← Volver al Inicio</a>
+            <a href="{% url 'ventas_garage_pdf' %}" class="pdf-button">Descargar PDF</a>
         </div>
     </div>
 </body>

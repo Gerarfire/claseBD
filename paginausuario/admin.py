@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import DatosPersonales, ExperienciaLaboral, Reconocimiento, CursoRealizado, ProductoAcademico, ProductoLaboral
+from .models import DatosPersonales, ExperienciaLaboral, Reconocimiento, CursoRealizado, ProductoAcademico, ProductoLaboral, VentaGarage
 
 # Register your models here.
 
@@ -104,6 +104,25 @@ class ProductoLaboralAdmin(admin.ModelAdmin):
     list_editable = ('activarparaqueseveaenfront',)
     search_fields = ('nombreproducto', 'descripcion')
     ordering = ('-fechaproducto',)
+    actions = ['activar_items', 'desactivar_items']
+
+    def activar_items(self, request, queryset):
+        queryset.update(activarparaqueseveaenfront=True)
+        self.message_user(request, f"{queryset.count()} items activados.")
+    activar_items.short_description = "Activar items seleccionados"
+
+    def desactivar_items(self, request, queryset):
+        queryset.update(activarparaqueseveaenfront=False)
+        self.message_user(request, f"{queryset.count()} items desactivados.")
+    desactivar_items.short_description = "Desactivar items seleccionados"
+
+@admin.register(VentaGarage)
+class VentaGarageAdmin(admin.ModelAdmin):
+    list_display = ('nombreproducto', 'estadoproducto', 'descripcion', 'valordelbien', 'activarparaqueseveaenfront')
+    list_filter = ('activarparaqueseveaenfront', 'estadoproducto')
+    list_editable = ('activarparaqueseveaenfront',)
+    search_fields = ('nombreproducto', 'descripcion')
+    ordering = ('-nombreproducto',)
     actions = ['activar_items', 'desactivar_items']
 
     def activar_items(self, request, queryset):

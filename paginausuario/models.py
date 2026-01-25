@@ -222,4 +222,39 @@ class ProductoLaboral(models.Model):
             raise ValidationError('La fecha del producto laboral no puede ser futura.')
 
 
+#BD tabla ventas garage
+class VentaGarage(models.Model):
+    idventagarage = models.AutoField(primary_key=True)
+
+    idperfilconqueestaactivo = models.ForeignKey(
+        DatosPersonales,
+        on_delete=models.CASCADE,
+        db_column='idperfilconqueestaactivo'
+    )
+
+    ESTADO_PRODUCTO_CHOICES = [
+        ('Bueno', 'Bueno'),
+        ('Regular', 'Regular'),
+    ]
+
+    nombreproducto = models.CharField(max_length=100)
+
+    estadoproducto = models.CharField(
+        max_length=40,
+        choices=ESTADO_PRODUCTO_CHOICES
+    )
+
+    descripcion = models.CharField(max_length=100)
+
+    valordelbien = models.DecimalField(max_digits=5, decimal_places=2)
+
+    activarparaqueseveaenfront = models.BooleanField(default=True, verbose_name="Activar para que se vea en front")
+
+    class Meta:
+        db_table = 'ventagarage'
+
+    def __str__(self):
+        return f"{self.nombreproducto} - {self.estadoproducto}"
+
+
 
