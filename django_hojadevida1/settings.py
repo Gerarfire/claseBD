@@ -24,7 +24,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 #SECRET_KEY = 'django-insecure-t1k!+z4iiy0#^c%)u^#0xig4l&=rfj#0&4)o!#p9@dymefgh0n'
-SECRET_KEY = os.environ.get('SECRET_KEY',default='your secret key')
+SECRET_KEY = os.environ.get('SECRET_KEY')
+if not SECRET_KEY:
+    raise ValueError('SECRET_KEY environment variable is not set')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = 'RENDER' not in os.environ
 
@@ -81,8 +83,12 @@ WSGI_APPLICATION = 'django_hojadevida1.wsgi.application'
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
 if not DEBUG:
+    DATABASE_URL = os.environ.get('DATABASE_URL')
+    if not DATABASE_URL:
+        raise ValueError('DATABASE_URL environment variable is not set')
     DATABASES = {
         'default': dj_database_url.config(
+            default=DATABASE_URL,
             conn_max_age=600,
             conn_health_checks=True,
         )
