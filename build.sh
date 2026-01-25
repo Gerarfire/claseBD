@@ -4,4 +4,5 @@ pip install -r requirements.txt
 
 python manage.py collectstatic --noinput
 
-python manage.py migrate
+# Run migrations with fake-initial to handle existing tables
+python manage.py migrate --fake-initial
