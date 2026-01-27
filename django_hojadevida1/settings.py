@@ -24,11 +24,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 #SECRET_KEY = 'django-insecure-t1k!+z4iiy0#^c%)u^#0xig4l&=rfj#0&4)o!#p9@dymefgh0n'
-SECRET_KEY = os.environ.get('SECRET_KEY')
-if not SECRET_KEY:
-    raise ValueError('SECRET_KEY environment variable is not set')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = 'RENDER' not in os.environ
+
+SECRET_KEY = os.environ.get('SECRET_KEY')
+if not SECRET_KEY:
+    if DEBUG:
+        SECRET_KEY = 'django-insecure-dev-key-change-in-production'
+    else:
+        raise ValueError('SECRET_KEY environment variable is not set')
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 

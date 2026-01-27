@@ -65,6 +65,27 @@
             font-size: 1.2em;
             opacity: 0.9;
         }
+        .personal-info, .contact-info, .address-info {
+            margin-top: 20px;
+            text-align: left;
+            max-width: 400px;
+        }
+        .personal-info p, .contact-info p, .address-info p {
+            margin: 5px 0;
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+        .personal-info strong, .contact-info strong, .address-info strong {
+            color: #fff;
+            font-weight: 600;
+        }
+        .contact-info a {
+            color: #fff;
+            text-decoration: underline;
+        }
+        .contact-info a:hover {
+            opacity: 0.8;
+        }
         .content {
             padding: 30px;
         }
@@ -182,12 +203,34 @@
                 {% if perfil.foto_perfil %}
                 <img src="{{ perfil.foto_perfil.url }}" alt="Foto de perfil" class="profile-photo">
                 {% else %}
-                <img src="https://i.pinimg.com/originals/e8/6f/46/e86f46ea77c37158aac339a6a4cbf69e.jpg" alt="Foto de perfil" class="profile-photo">
+                <div class="profile-placeholder">{{ perfil.nombres|first|upper }}</div>
                 {% endif %}
                 <h1>{{ perfil.nombres }} {{ perfil.apellidos }}</h1>
                 <p>{{ perfil.descripcionperfil }}</p>
-        
-        </div>
+
+                <!-- Información Personal -->
+                <div class="personal-info">
+                    {% if perfil.nacionalidad %}<p><strong>Nacionalidad:</strong> {{ perfil.nacionalidad }}</p>{% endif %}
+                    {% if perfil.fechanacimiento %}<p><strong>Fecha de Nacimiento:</strong> {{ perfil.fechanacimiento|date:"d/m/Y" }}</p>{% endif %}
+                    {% if perfil.numerocedula %}<p><strong>Cédula:</strong> {{ perfil.numerocedula }}</p>{% endif %}
+                    {% if perfil.sexo %}<p><strong>Sexo:</strong> {{ perfil.get_sexo_display }}</p>{% endif %}
+                    {% if perfil.estadocivil %}<p><strong>Estado Civil:</strong> {{ perfil.estadocivil }}</p>{% endif %}
+                    {% if perfil.licenciaconducir %}<p><strong>Licencia de Conducir:</strong> {{ perfil.licenciaconducir }}</p>{% endif %}
+                </div>
+
+                <!-- Información de Contacto -->
+                <div class="contact-info">
+                    {% if perfil.telefonoconvencional %}<p><strong>Teléfono:</strong> {{ perfil.telefonoconvencional }}</p>{% endif %}
+                    {% if perfil.telefonofijo %}<p><strong>Teléfono Fijo:</strong> {{ perfil.telefonofijo }}</p>{% endif %}
+                    {% if perfil.sitioweb %}<p><strong>Sitio Web:</strong> <a href="{{ perfil.sitioweb }}" target="_blank">{{ perfil.sitioweb }}</a></p>{% endif %}
+                </div>
+
+                <!-- Direcciones -->
+                <div class="address-info">
+                    {% if perfil.direcciontrabajo %}<p><strong>Dirección Trabajo:</strong> {{ perfil.direcciontrabajo }}</p>{% endif %}
+                    {% if perfil.direcciondomiciliaria %}<p><strong>Dirección Domiciliaria:</strong> {{ perfil.direcciondomiciliaria }}</p>{% endif %}
+                </div>
+            </div>
         <nav class="nav">
             <ul>
                 <li><a href="{% url 'experiencias' %}">Experiencias</a></li>
