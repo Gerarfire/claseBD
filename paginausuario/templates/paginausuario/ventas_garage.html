@@ -125,6 +125,23 @@
             font-style: italic;
             padding: 40px;
         }
+        .estado-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9em;
+            color: white;
+        }
+        .estado-bueno {
+            background: #27ae60;
+        }
+        .estado-regular {
+            background: #f39c12;
+        }
+        .estado-malo {
+            background: #e74c3c;
+        }
         @media (max-width: 768px) {
             .nav ul {
                 flex-direction: column;
@@ -193,7 +210,18 @@
                 {% for venta in ventas_garage %}
                 <div class="item venta-item" data-id="{{ venta.id }}">
                     <h3>{{ venta.nombreproducto }}</h3>
-                    <p><strong>Estado:</strong> {{ venta.estadoproducto }}</p>
+                    <p>
+                        <strong>Estado:</strong>
+                        {% if venta.estadoproducto|upper == "BUENO" %}
+                        <span class="estado-badge estado-bueno">{{ venta.estadoproducto }}</span>
+                        {% elif venta.estadoproducto|upper == "REGULAR" %}
+                        <span class="estado-badge estado-regular">{{ venta.estadoproducto }}</span>
+                        {% elif venta.estadoproducto|upper == "MALO" %}
+                        <span class="estado-badge estado-malo">{{ venta.estadoproducto }}</span>
+                        {% else %}
+                        <span class="estado-badge" style="background: #95a5a6;">{{ venta.estadoproducto }}</span>
+                        {% endif %}
+                    </p>
                     <p><strong>Valor:</strong> ${{ venta.valordelbien }}</p>
                     <p><strong>Descripción:</strong> {{ venta.descripcion }}</p>
                 </div>
