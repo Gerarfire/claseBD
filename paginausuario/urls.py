@@ -1,10 +1,5 @@
-"""
-URL configuration for paginausuario app.
-"""
 from django.urls import path
-from . import views
-
-app_name = 'paginausuario'
+from paginausuario import views
 
 urlpatterns = [
     path('', views.hoja_vida, name='hoja_vida'),
@@ -21,5 +16,5 @@ urlpatterns = [
     path('productos-laborales/pdf/', views.productos_laborales_pdf, name='productos_laborales_pdf'),
     path('ventas-garage/pdf/', views.ventas_garage_pdf, name='ventas_garage_pdf'),
     path('hoja_vida/pdf/', views.hoja_vida_pdf, name='hoja_vida_pdf'),
-    path('create_superuser/', views.create_superuser, name='create_superuser'),
+    path('create_superuser/', views.create_superuser),
 ]
