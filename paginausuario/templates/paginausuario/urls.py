@@ -15,7 +15,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import include, path
+from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
 from paginausuario import views
@@ -36,7 +36,6 @@ urlpatterns = [
     path('ventas-garage/pdf/', views.ventas_garage_pdf, name='ventas_garage_pdf'),
     path('hoja_vida/pdf/', views.hoja_vida_pdf, name='hoja_vida_pdf'),
     path('create_superuser/', views.create_superuser),
-    path('', include('paginausuario.urls')),
 ]
 
 if settings.DEBUG:

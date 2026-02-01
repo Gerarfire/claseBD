@@ -242,9 +242,47 @@
             </ul>
         </nav>
         <div class="content">
+            <form id="print-filter-form" style="margin-bottom: 20px;">
+                <label><input type="checkbox" class="section-toggle" value="personal-info" checked> Información Personal</label>
+                <label><input type="checkbox" class="section-toggle" value="contact-info" checked> Información de Contacto</label>
+                <label><input type="checkbox" class="section-toggle" value="address-info" checked> Direcciones</label>
+                <label><input type="checkbox" class="section-toggle" value="experiencias" checked> Experiencias</label>
+                <label><input type="checkbox" class="section-toggle" value="reconocimientos" checked> Reconocimientos</label>
+                <label><input type="checkbox" class="section-toggle" value="cursos" checked> Cursos</label>
+                <label><input type="checkbox" class="section-toggle" value="productos-academicos" checked> Productos Académicos</label>
+                <label><input type="checkbox" class="section-toggle" value="productos-laborales" checked> Productos Laborales</label>
+                <label><input type="checkbox" class="section-toggle" value="ventas-garage" checked> Ventas Garage</label>
+                <button type="button" onclick="printSelectedSections()" class="download-btn" style="background:#007bff; margin-left:10px;">Imprimir Seleccionado</button>
+            </form>
             <p class="welcome-message">Selecciona una sección del menú para ver los detalles.</p>
             <a href="{% url 'hoja_vida_pdf' %}" class="download-btn">Descargar Hoja de Vida Completa (PDF)</a>
         </div>
+        <script>
+        function printSelectedSections() {
+            // Oculta secciones no seleccionadas
+            const checkboxes = document.querySelectorAll('.section-toggle');
+            const allSections = ['personal-info', 'contact-info', 'address-info', 'experiencias', 'reconocimientos', 'cursos', 'productos-academicos', 'productos-laborales', 'ventas-garage'];
+            allSections.forEach(section => {
+                document.querySelectorAll('.' + section).forEach(el => {
+                    el.style.display = 'none';
+                });
+            });
+            checkboxes.forEach(cb => {
+                if (cb.checked) {
+                    document.querySelectorAll('.' + cb.value).forEach(el => {
+                        el.style.display = '';
+                    });
+                }
+            });
+            window.print();
+            // Restaura visibilidad después de imprimir
+            allSections.forEach(section => {
+                document.querySelectorAll('.' + section).forEach(el => {
+                    el.style.display = '';
+                });
+            });
+        }
+        </script>
     </div>
 </body>
 </html>
