@@ -12,3 +12,4 @@ python manage.py migrate || echo "Migrations had issues, but continuing with dep
 # Populate database with sample data
 echo "Populating database with sample data..."
 python manage.py populate_data
+

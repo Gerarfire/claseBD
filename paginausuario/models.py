@@ -10,7 +10,7 @@ class DatosPersonales(models.Model):
     ]
 
     idperfil = models.AutoField(primary_key=True)
-    descripcionperfil = models.CharField(max_length=50)
+    descripcionperfil = models.CharField(max_length=200)
     perfilactivo = models.IntegerField(default=1)
 
     apellidos = models.CharField(max_length=60)

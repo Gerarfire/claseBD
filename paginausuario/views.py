@@ -16,12 +16,12 @@ def hoja_vida(request):
     if not perfil:
         return HttpResponse("No hay perfil activo configurado.")
 
-    # Obtener datos relacionados
-    experiencias = ExperienciaLaboral.objects.filter(idperfilconqueestaactivo=perfil, activarparaqueseveaenfront=True)
-    reconocimientos = Reconocimiento.objects.filter(idperfilconqueestaactivo=perfil, activarparaqueseveaenfront=True)
-    cursos = CursoRealizado.objects.filter(idperfilconqueestaactivo=perfil, activarparaqueseveaenfront=True)
+    # Obtener datos relacionados y ordenar cronológicamente (de mayor a menor)
+    experiencias = ExperienciaLaboral.objects.filter(idperfilconqueestaactivo=perfil, activarparaqueseveaenfront=True).order_by('-fechafingestion', '-fechainiciogestion')
+    reconocimientos = Reconocimiento.objects.filter(idperfilconqueestaactivo=perfil, activarparaqueseveaenfront=True).order_by('-fechareconocimiento')
+    cursos = CursoRealizado.objects.filter(idperfilconqueestaactivo=perfil, activarparaqueseveaenfront=True).order_by('-fechafin', '-fechainicio')
     productos_academicos = ProductoAcademico.objects.filter(idperfilconqueestaactivo=perfil, activarparaqueseveaenfront=True)
-    productos_laborales = ProductoLaboral.objects.filter(idperfilconqueestaactivo=perfil, activarparaqueseveaenfront=True)
+    productos_laborales = ProductoLaboral.objects.filter(idperfilconqueestaactivo=perfil, activarparaqueseveaenfront=True).order_by('-fechaproducto')
 
     context = {
         'perfil': perfil,
@@ -37,7 +37,7 @@ def experiencias(request):
     perfil = DatosPersonales.objects.filter(perfilactivo=1).first()
     if not perfil:
         return HttpResponse("No hay perfil activo configurado.")
-    experiencias = ExperienciaLaboral.objects.filter(idperfilconqueestaactivo=perfil, activarparaqueseveaenfront=True)
+    experiencias = ExperienciaLaboral.objects.filter(idperfilconqueestaactivo=perfil, activarparaqueseveaenfront=True).order_by('-fechafingestion', '-fechainiciogestion')
     context = {'perfil': perfil, 'experiencias': experiencias}
     return render(request, 'paginausuario/experiencias.html', context)
 
@@ -45,7 +45,7 @@ def reconocimientos(request):
     perfil = DatosPersonales.objects.filter(perfilactivo=1).first()
     if not perfil:
         return HttpResponse("No hay perfil activo configurado.")
-    reconocimientos = Reconocimiento.objects.filter(idperfilconqueestaactivo=perfil, activarparaqueseveaenfront=True)
+    reconocimientos = Reconocimiento.objects.filter(idperfilconqueestaactivo=perfil, activarparaqueseveaenfront=True).order_by('-fechareconocimiento')
     context = {'perfil': perfil, 'reconocimientos': reconocimientos}
     return render(request, 'paginausuario/reconocimientos.html', context)
 
@@ -53,7 +53,7 @@ def cursos(request):
     perfil = DatosPersonales.objects.filter(perfilactivo=1).first()
     if not perfil:
         return HttpResponse("No hay perfil activo configurado.")
-    cursos = CursoRealizado.objects.filter(idperfilconqueestaactivo=perfil, activarparaqueseveaenfront=True)
+    cursos = CursoRealizado.objects.filter(idperfilconqueestaactivo=perfil, activarparaqueseveaenfront=True).order_by('-fechafin', '-fechainicio')
     context = {'perfil': perfil, 'cursos': cursos}
     return render(request, 'paginausuario/cursos.html', context)
 
@@ -69,7 +69,7 @@ def productos_laborales(request):
     perfil = DatosPersonales.objects.filter(perfilactivo=1).first()
     if not perfil:
         return HttpResponse("No hay perfil activo configurado.")
-    productos_laborales = ProductoLaboral.objects.filter(idperfilconqueestaactivo=perfil, activarparaqueseveaenfront=True)
+    productos_laborales = ProductoLaboral.objects.filter(idperfilconqueestaactivo=perfil, activarparaqueseveaenfront=True).order_by('-fechaproducto')
     context = {'perfil': perfil, 'productos_laborales': productos_laborales}
     return render(request, 'paginausuario/productos_laborales.html', context)
 
