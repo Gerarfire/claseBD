@@ -52,16 +52,23 @@ class Command(BaseCommand):
             self.stdout.write(self.style.SUCCESS('Experiencia laboral creada'))
 
         # Crear reconocimiento de ejemplo
-        rec, created = Reconocimiento.objects.get_or_create(
+        rec = Reconocimiento.objects.filter(
             idperfilconqueestaactivo=perfil,
-            tiporeconocimiento='Académico',
-            defaults={
-                'fechareconocimiento': date(2022, 6, 15),
-                'descripcionreconocimiento': 'Mejor Proyecto de Fin de Carrera',
-                'entidadpatrocinadora': 'Universidad Central del Ecuador',
-                'activarparaqueseveaenfront': True
-            }
-        )
+            tiporeconocimiento='Académico'
+        ).first()
+        
+        if not rec:
+            rec = Reconocimiento.objects.create(
+                idperfilconqueestaactivo=perfil,
+                tiporeconocimiento='Académico',
+                fechareconocimiento=date(2022, 6, 15),
+                descripcionreconocimiento='Mejor Proyecto de Fin de Carrera',
+                entidadpatrocinadora='Universidad Central del Ecuador',
+                activarparaqueseveaenfront=True
+            )
+            self.stdout.write(self.style.SUCCESS('Reconocimiento creado'))
+        else:
+            self.stdout.write('Reconocimiento ya existe')
 
         if created:
             self.stdout.write(self.style.SUCCESS('Reconocimiento creado'))
