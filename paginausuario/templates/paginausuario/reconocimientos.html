@@ -166,19 +166,43 @@
         <div class="content">
             <div class="section">
                 <h2>Reconocimientos</h2>
+                <form id="reconocimiento-filter-form">
+                    <p><strong>Selecciona los reconocimientos a descargar:</strong></p>
+                    {% for rec in reconocimientos %}
+                    <label style="display: block; margin-bottom: 10px;">
+                        <input type="checkbox" class="reconocimiento-checkbox" value="{{ rec.id }}" checked>
+                        {{ rec.tiporeconocimiento }} - {{ rec.fechareconocimiento }}
+                    </label>
+                    {% empty %}
+                    <p>No hay reconocimientos registrados.</p>
+                    {% endfor %}
+                </form>
                 {% for rec in reconocimientos %}
-                <div class="item">
+                <div class="item reconocimiento-item" data-id="{{ rec.id }}">
                     <h3>{{ rec.tiporeconocimiento }}</h3>
                     <p><strong>Fecha:</strong> {{ rec.fechareconocimiento }}</p>
                     <p><strong>Descripción:</strong> {{ rec.descripcionreconocimiento }}</p>
                     <p><strong>Entidad:</strong> {{ rec.entidadpatrocinadora }}</p>
                     <p><strong>Contacto:</strong> {{ rec.nombrecontactoauspicia|default:"N/A" }} - {{ rec.telefonocontactoauspicia|default:"N/A" }}</p>
                 </div>
-                {% empty %}
-                <p>No hay reconocimientos registrados.</p>
                 {% endfor %}
             </div>
-            <button onclick="window.print()" class="download-btn">Imprimir Reconocimientos</button>
+            <button onclick="printSelectedReconocimientos()" class="download-btn">Descargar Seleccionados</button>
+            <script>
+            function printSelectedReconocimientos() {
+                const checkboxes = document.querySelectorAll('.reconocimiento-checkbox:checked');
+                const selectedIds = Array.from(checkboxes).map(cb => cb.value);
+                document.querySelectorAll('.reconocimiento-item').forEach(item => item.style.display = 'none');
+                selectedIds.forEach(id => {
+                    const el = document.querySelector('[data-id="' + id + '"]');
+                    if (el) el.style.display = 'block';
+                });
+                document.getElementById('reconocimiento-filter-form').style.display = 'none';
+                window.print();
+                document.querySelectorAll('.reconocimiento-item').forEach(item => item.style.display = 'block');
+                document.getElementById('reconocimiento-filter-form').style.display = 'block';
+            }
+            </script>
             <br>
             <a href="{% url 'hoja_vida' %}" class="back-link">← Volver al Inicio</a>
         </div>

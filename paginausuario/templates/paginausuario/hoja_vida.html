@@ -252,12 +252,7 @@
                 <label><input type="checkbox" class="section-toggle" value="productos-laborales" checked> Productos Laborales</label>
                 <label><input type="checkbox" class="section-toggle" value="ventas-garage" checked> Ventas Garage</label>
                 <button type="button" onclick="printSelectedSections()" class="download-btn print-btn">Imprimir Seleccionado</button>
-                    /* Estilo para el botón de imprimir seleccionado */
-                    .print-btn {
-                        background: #007bff;
-                        margin-left: 10px;
-                    }
-            </form>
+                  
             <p class="welcome-message">Selecciona una sección del menú para ver los detalles.</p>
             <a href="{% url 'hoja_vida_pdf' %}" class="download-btn">Descargar Hoja de Vida Completa (PDF)</a>
         </div>

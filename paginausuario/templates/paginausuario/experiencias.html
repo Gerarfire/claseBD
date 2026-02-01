@@ -166,8 +166,19 @@
         <div class="content">
             <div class="section">
                 <h2>Experiencia Laboral</h2>
+                <form id="experience-filter-form">
+                    <p><strong>Selecciona las experiencias a descargar:</strong></p>
+                    {% for exp in experiencias %}
+                    <label style="display: block; margin-bottom: 10px;">
+                        <input type="checkbox" class="experience-checkbox" value="{{ exp.id }}" checked>
+                        {{ exp.cargodesempenado }} en {{ exp.nombrempresa }}
+                    </label>
+                    {% empty %}
+                    <p>No hay experiencias laborales registradas.</p>
+                    {% endfor %}
+                </form>
                 {% for exp in experiencias %}
-                <div class="item">
+                <div class="item experience-item" data-id="{{ exp.id }}">
                     <h3>{{ exp.cargodesempenado }} en {{ exp.nombrempresa }}</h3>
                     <p><strong>Lugar:</strong> {{ exp.lugarempresa }}</p>
                     <p><strong>Email:</strong> {{ exp.emailempresa|default:"N/A" }}</p>
@@ -177,14 +188,40 @@
                     <p><strong>Fecha Fin:</strong> {{ exp.fechafingestion|default:"Actualidad" }}</p>
                     <p><strong>Funciones:</strong> {{ exp.descripcionfunciones }}</p>
                 </div>
-                {% empty %}
-                <p>No hay experiencias laborales registradas.</p>
                 {% endfor %}
             </div>
-            <button onclick="window.print()" class="download-btn">Imprimir Experiencias Laborales</button>
+            <button onclick="printSelectedExperiences()" class="download-btn">Descargar Seleccionadas</button>
             <br>
             <a href="{% url 'hoja_vida' %}" class="back-link">← Volver al Inicio</a>
         </div>
+        <script>
+        function printSelectedExperiences() {
+            const checkboxes = document.querySelectorAll('.experience-checkbox:checked');
+            const selectedIds = Array.from(checkboxes).map(cb => cb.value);
+            
+            // Ocultar todas las experiencias
+            document.querySelectorAll('.experience-item').forEach(item => {
+                item.style.display = 'none';
+            });
+            
+            // Mostrar solo las seleccionadas
+            selectedIds.forEach(id => {
+                document.querySelector('[data-id="' + id + '"]').style.display = 'block';
+            });
+            
+            // Ocultar el formulario de filtro
+            document.getElementById('experience-filter-form').style.display = 'none';
+            
+            // Imprimir
+            window.print();
+            
+            // Restaurar visibilidad
+            document.querySelectorAll('.experience-item').forEach(item => {
+                item.style.display = 'block';
+            });
+            document.getElementById('experience-filter-form').style.display = 'block';
+        }
+        </script>
     </div>
 </body>
 </html>

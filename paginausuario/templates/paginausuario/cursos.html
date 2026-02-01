@@ -166,8 +166,19 @@
         <div class="content">
             <div class="section">
                 <h2>Cursos Realizados</h2>
+                <form id="curso-filter-form">
+                    <p><strong>Selecciona los cursos a descargar:</strong></p>
+                    {% for curso in cursos %}
+                    <label style="display: block; margin-bottom: 10px;">
+                        <input type="checkbox" class="curso-checkbox" value="{{ curso.id }}" checked>
+                        {{ curso.nombrecurso }}
+                    </label>
+                    {% empty %}
+                    <p>No hay cursos registrados.</p>
+                    {% endfor %}
+                </form>
                 {% for curso in cursos %}
-                <div class="item">
+                <div class="item curso-item" data-id="{{ curso.id }}">
                     <h3>{{ curso.nombrecurso }}</h3>
                     <p><strong>Fecha Inicio:</strong> {{ curso.fechainicio }}</p>
                     <p><strong>Fecha Fin:</strong> {{ curso.fechafin|default:"En curso" }}</p>
@@ -176,11 +187,24 @@
                     <p><strong>Entidad:</strong> {{ curso.entidadpatrocinadora }}</p>
                     <p><strong>Contacto:</strong> {{ curso.nombrecontactoauspicia|default:"N/A" }} - {{ curso.telefonocontactoauspicia|default:"N/A" }}</p>
                 </div>
-                {% empty %}
-                <p>No hay cursos registrados.</p>
                 {% endfor %}
             </div>
-            <button onclick="window.print()" class="download-btn">Imprimir Cursos Realizados</button>
+            <button onclick="printSelectedCursos()" class="download-btn">Descargar Seleccionados</button>
+            <script>
+            function printSelectedCursos() {
+                const checkboxes = document.querySelectorAll('.curso-checkbox:checked');
+                const selectedIds = Array.from(checkboxes).map(cb => cb.value);
+                document.querySelectorAll('.curso-item').forEach(item => item.style.display = 'none');
+                selectedIds.forEach(id => {
+                    const el = document.querySelector('[data-id="' + id + '"]');
+                    if (el) el.style.display = 'block';
+                });
+                document.getElementById('curso-filter-form').style.display = 'none';
+                window.print();
+                document.querySelectorAll('.curso-item').forEach(item => item.style.display = 'block');
+                document.getElementById('curso-filter-form').style.display = 'block';
+            }
+            </script>
             <br>
             <a href="{% url 'hoja_vida' %}" class="back-link">← Volver al Inicio</a>
         </div>

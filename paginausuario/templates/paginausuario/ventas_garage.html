@@ -179,20 +179,42 @@
         <div class="content">
             <div class="section">
                 <h2>Ventas Garage</h2>
+                <form id="venta-filter-form">
+                    <p><strong>Selecciona los productos a descargar:</strong></p>
+                    {% for venta in ventas_garage %}
+                    <label style="display: block; margin-bottom: 10px;">
+                        <input type="checkbox" class="venta-checkbox" value="{{ venta.id }}" checked>
+                        {{ venta.nombreproducto }} ({{ venta.estadoproducto }})
+                    </label>
+                    {% empty %}
+                    <p>No hay ventas de garage disponibles.</p>
+                    {% endfor %}
+                </form>
                 {% for venta in ventas_garage %}
-                <div class="item">
+                <div class="item venta-item" data-id="{{ venta.id }}">
                     <h3>{{ venta.nombreproducto }}</h3>
                     <p><strong>Estado:</strong> {{ venta.estadoproducto }}</p>
                     <p><strong>Valor:</strong> ${{ venta.valordelbien }}</p>
                     <p><strong>Descripción:</strong> {{ venta.descripcion }}</p>
                 </div>
-                {% empty %}
-                <div class="no-items">
-                    <p>No hay ventas de garage disponibles.</p>
-                </div>
                 {% endfor %}
             </div>
-            <a href="{% url 'ventas_garage_pdf' %}" class="pdf-button">Descargar PDF</a>
+            <button onclick="printSelectedVentas()" class="download-btn">Descargar Seleccionados</button>
+            <script>
+            function printSelectedVentas() {
+                const checkboxes = document.querySelectorAll('.venta-checkbox:checked');
+                const selectedIds = Array.from(checkboxes).map(cb => cb.value);
+                document.querySelectorAll('.venta-item').forEach(item => item.style.display = 'none');
+                selectedIds.forEach(id => {
+                    const el = document.querySelector('[data-id="' + id + '"]');
+                    if (el) el.style.display = 'block';
+                });
+                document.getElementById('venta-filter-form').style.display = 'none';
+                window.print();
+                document.querySelectorAll('.venta-item').forEach(item => item.style.display = 'block');
+                document.getElementById('venta-filter-form').style.display = 'block';
+            }
+            </script>
         </div>
     </div>
 </body>

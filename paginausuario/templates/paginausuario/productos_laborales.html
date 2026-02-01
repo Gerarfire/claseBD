@@ -166,17 +166,41 @@
         <div class="content">
             <div class="section">
                 <h2>Productos Laborales</h2>
+                <form id="prod-lab-filter-form">
+                    <p><strong>Selecciona los productos a descargar:</strong></p>
+                    {% for prod in productos_laborales %}
+                    <label style="display: block; margin-bottom: 10px;">
+                        <input type="checkbox" class="prod-lab-checkbox" value="{{ prod.id }}" checked>
+                        {{ prod.nombreproducto }}
+                    </label>
+                    {% empty %}
+                    <p>No hay productos laborales registrados.</p>
+                    {% endfor %}
+                </form>
                 {% for prod in productos_laborales %}
-                <div class="item">
+                <div class="item prod-lab-item" data-id="{{ prod.id }}">
                     <h3>{{ prod.nombreproducto }}</h3>
                     <p><strong>Fecha:</strong> {{ prod.fechaproducto }}</p>
                     <p><strong>Descripción:</strong> {{ prod.descripcion }}</p>
                 </div>
-                {% empty %}
-                <p>No hay productos laborales registrados.</p>
                 {% endfor %}
             </div>
-            <button onclick="window.print()" class="download-btn">Imprimir Productos Laborales</button>
+            <button onclick="printSelectedProdLab()" class="download-btn">Descargar Seleccionados</button>
+            <script>
+            function printSelectedProdLab() {
+                const checkboxes = document.querySelectorAll('.prod-lab-checkbox:checked');
+                const selectedIds = Array.from(checkboxes).map(cb => cb.value);
+                document.querySelectorAll('.prod-lab-item').forEach(item => item.style.display = 'none');
+                selectedIds.forEach(id => {
+                    const el = document.querySelector('[data-id="' + id + '"]');
+                    if (el) el.style.display = 'block';
+                });
+                document.getElementById('prod-lab-filter-form').style.display = 'none';
+                window.print();
+                document.querySelectorAll('.prod-lab-item').forEach(item => item.style.display = 'block');
+                document.getElementById('prod-lab-filter-form').style.display = 'block';
+            }
+            </script>
             <br>
             <a href="{% url 'hoja_vida' %}" class="back-link">← Volver al Inicio</a>
         </div>
