@@ -50,7 +50,10 @@ class DatosPersonales(models.Model):
         db_table = 'datospersonales'
 
     def save(self, *args, **kwargs):
-        """Override save to convert uploaded profile images to JPEG (.jpg) and ensure consistent format."""
+        """Override save to:
+        - convert uploaded profile images to JPEG (.jpg) and ensure consistent format.
+        - ensure there is only one profile with perfilactivo=1 (set others to 0).
+        """
         from PIL import Image
         import os
         from django.core.files.base import ContentFile
@@ -74,6 +77,18 @@ class DatosPersonales(models.Model):
             except Exception:
                 # If conversion fails, ignore and keep original file (will still work if it's an image)
                 pass
+
+        # If this profile is being set as active, deactivate others first
+        try:
+            if getattr(self, 'perfilactivo', 0) == 1:
+                # exclude self.pk if it exists (for new instances self.pk may be None)
+                from django.db import transaction
+                with transaction.atomic():
+                    from .models import DatosPersonales as _DP
+                    _DP.objects.exclude(pk=self.pk).update(perfilactivo=0)
+        except Exception:
+            # If anything goes wrong, ignore and proceed to save — better to save than to block.
+            pass
 
         super().save(*args, **kwargs)
 

@@ -20,6 +20,20 @@ class DatosPersonalesAdmin(admin.ModelAdmin):
             'fields': ('direcciontrabajo', 'direcciondomiciliaria')
         }),
     )
+    actions = ['set_active_profile']
+
+    def set_active_profile(self, request, queryset):
+        # Set the first selected profile as active and deactivate all others
+        if not queryset.exists():
+            self.message_user(request, 'No profiles selected.')
+            return
+        profile = queryset.first()
+        # deactivate all
+        DatosPersonales.objects.update(perfilactivo=0)
+        profile.perfilactivo = 1
+        profile.save()
+        self.message_user(request, f'Perfil "{profile}" marcado como activo.')
+    set_active_profile.short_description = 'Marcar el perfil seleccionado como activo'
 
 @admin.register(ExperienciaLaboral)
 class ExperienciaLaboralAdmin(admin.ModelAdmin):
