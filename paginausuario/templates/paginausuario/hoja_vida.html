@@ -287,60 +287,248 @@
                 <button type="button" onclick="printSelectedSections()" class="download-btn print-btn">Imprimir Seleccionado</button>
             </form>
             <p class="welcome-message">Selecciona las secciones que deseas imprimir.</p>
-        </div>
-        <script>
-        function printSelectedSections() {
-            // Obtener los checkboxes seleccionados
-            const checkboxes = document.querySelectorAll('.section-toggle:checked');
-            const selectedValues = Array.from(checkboxes).map(cb => cb.value);
-            
-            // Si no hay nada seleccionado, mostrar alerta
-            if (selectedValues.length === 0) {
-                alert('Por favor, selecciona al menos una sección para imprimir.');
-                return;
-            }
-            
-            // Ocultar todas las secciones
-            document.querySelectorAll('.personal-info, .contact-info, .address-info, .experiencias, .reconocimientos, .cursos, .productos-academicos, .productos-laborales, .ventas-garage').forEach(el => {
-                el.style.display = 'none';
-            });
-            
-            // Mostrar solo las seleccionadas
-            selectedValues.forEach(value => {
-                document.querySelectorAll('.' + value).forEach(el => {
-                    el.style.display = 'block';
-                });
-            });
-            
-            // Esperar un poco para que el navegador actualice el DOM
-            setTimeout(() => {
-                window.print();
-                
-                // Restaurar la visibilidad después de imprimir
-                document.querySelectorAll('.personal-info, .contact-info, .address-info, .experiencias, .reconocimientos, .cursos, .productos-academicos, .productos-laborales, .ventas-garage').forEach(el => {
-                    el.style.display = 'block';
-                });
-            }, 100);
-        }
 
-        // Toggle personal info visibility
-        const toggleBtn = document.getElementById('toggle-personal');
-        if (toggleBtn) {
-            toggleBtn.addEventListener('click', function() {
-                const sections = document.querySelectorAll('.personal-info, .contact-info, .address-info');
-                const expanded = this.getAttribute('aria-expanded') === 'true';
-                sections.forEach(el => {
-                    if (expanded) {
-                        el.classList.add('info-hidden');
-                    } else {
-                        el.classList.remove('info-hidden');
-                    }
+            <!-- Secciones que se mostrarán o imprimirán según la selección -->
+            <div class="section experiencias">
+                <h2>Experiencia Laboral</h2>
+                {% if experiencias %}
+                    {% for exp in experiencias %}
+                        <div class="item">
+                            <h3>{{ exp.cargodesempenado }} en {{ exp.nombrempresa }}</h3>
+                            <p><strong>Lugar:</strong> {{ exp.lugarempresa }}</p>
+                            <p><strong>Funciones:</strong> {{ exp.descripcionfunciones }}</p>
+                            <p><strong>Fecha Inicio:</strong> {{ exp.fechainiciogestion }} - <strong>Fecha Fin:</strong> {{ exp.fechafingestion|default:'Actualidad' }}</p>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>No hay experiencias registradas.</p>
+                {% endif %}
+            </div>
+
+            <div class="section reconocimientos">
+                <h2>Reconocimientos</h2>
+                {% if reconocimientos %}
+                    {% for rec in reconocimientos %}
+                        <div class="item">
+                            <h3>{{ rec.tiporeconocimiento }}</h3>
+                            <p><strong>Fecha:</strong> {{ rec.fechareconocimiento }}</p>
+                            <p><strong>Descripción:</strong> {{ rec.descripcionreconocimiento }}</p>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>No hay reconocimientos registrados.</p>
+                {% endif %}
+            </div>
+
+            <div class="section cursos">
+                <h2>Cursos</h2>
+                {% if cursos %}
+                    {% for curso in cursos %}
+                        <div class="item">
+                            <h3>{{ curso.nombrecurso }}</h3>
+                            <p><strong>Fechas:</strong> {{ curso.fechainicio }} - {{ curso.fechafin|default:'En curso' }}</p>
+                            <p><strong>Horas:</strong> {{ curso.totalhoras }}</p>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>No hay cursos registrados.</p>
+                {% endif %}
+            </div>
+
+            <div class="section productos-academicos">
+                <h2>Productos Académicos</h2>
+                {% if productos_academicos %}
+                    {% for prod in productos_academicos %}
+                        <div class="item">
+                            <h3>{{ prod.nombrerecurso }}</h3>
+                            <p>{{ prod.descripcion }}</p>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>No hay productos académicos registrados.</p>
+                {% endif %}
+            </div>
+
+            <div class="section productos-laborales">
+                <h2>Productos Laborales</h2>
+                {% if productos_laborales %}
+                    {% for prod in productos_laborales %}
+                        <div class="item">
+                            <h3>{{ prod.nombreproducto }}</h3>
+                            <p><strong>Fecha:</strong> {{ prod.fechaproducto }}</p>
+                            <p>{{ prod.descripcion }}</p>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>No hay productos laborales registrados.</p>
+                {% endif %}
+            </div>
+
+            <div class="section ventas-garage">
+                <h2>Ventas Garage</h2>
+                {% if ventas_garage %}
+                    {% for venta in ventas_garage %}
+                        <div class="item">
+                            <h3>{{ venta.nombreproducto }}</h3>
+                            <p><strong>Estado:</strong> {{ venta.estadoproducto }}</p>
+                            <p><strong>Valor:</strong> ${{ venta.valordelbien }}</p>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>No hay ventas registradas.</p>
+                {% endif %}
+            </div>
+
+            <!-- Secciones completas disponibles para imprimir -->
+            <div class="section experiencias">
+                <h2>Experiencias</h2>
+                {% if experiencias %}
+                    {% for exp in experiencias %}
+                        <div class="item">
+                            <h3>{{ exp.cargodesempenado }}</h3>
+                            <p><strong>Empresa:</strong> {{ exp.nombrempresa }}</p>
+                            <p><strong>Lugar:</strong> {{ exp.lugarempresa }}</p>
+                            <p><strong>Funciones:</strong> {{ exp.descripcionfunciones }}</p>
+                            <p><strong>Periodo:</strong> {{ exp.fechainiciogestion }} - {{ exp.fechafingestion|default:"Actualidad" }}</p>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>No hay experiencias configuradas.</p>
+                {% endif %}
+            </div>
+
+            <div class="section reconocimientos">
+                <h2>Reconocimientos</h2>
+                {% if reconocimientos %}
+                    {% for rec in reconocimientos %}
+                        <div class="item">
+                            <h3>{{ rec.tiporeconocimiento }}</h3>
+                            <p><strong>Fecha:</strong> {{ rec.fechareconocimiento }}</p>
+                            <p><strong>Entidad:</strong> {{ rec.entidadpatrocinadora }}</p>
+                            <p>{{ rec.descripcionreconocimiento }}</p>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>No hay reconocimientos configurados.</p>
+                {% endif %}
+            </div>
+
+            <div class="section cursos">
+                <h2>Cursos</h2>
+                {% if cursos %}
+                    {% for curso in cursos %}
+                        <div class="item">
+                            <h3>{{ curso.nombrecurso }}</h3>
+                            <p><strong>Fechas:</strong> {{ curso.fechainicio }} - {{ curso.fechafin|default:"En curso" }}</p>
+                            <p><strong>Horas:</strong> {{ curso.totalhoras }}</p>
+                            <p>{{ curso.descripcioncurso }}</p>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>No hay cursos configurados.</p>
+                {% endif %}
+            </div>
+
+            <div class="section productos-academicos">
+                <h2>Productos Académicos</h2>
+                {% if productos_academicos %}
+                    {% for prod in productos_academicos %}
+                        <div class="item">
+                            <h3>{{ prod.nombrerecurso }}</h3>
+                            <p><strong>Clasificador:</strong> {{ prod.clasificador }}</p>
+                            <p>{{ prod.descripcion }}</p>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>No hay productos académicos configurados.</p>
+                {% endif %}
+            </div>
+
+            <div class="section productos-laborales">
+                <h2>Productos Laborales</h2>
+                {% if productos_laborales %}
+                    {% for prod in productos_laborales %}
+                        <div class="item">
+                            <h3>{{ prod.nombreproducto }}</h3>
+                            <p><strong>Fecha:</strong> {{ prod.fechaproducto }}</p>
+                            <p>{{ prod.descripcion }}</p>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>No hay productos laborales configurados.</p>
+                {% endif %}
+            </div>
+
+            <div class="section ventas-garage">
+                <h2>Ventas Garage</h2>
+                {% if ventas_garage %}
+                    {% for venta in ventas_garage %}
+                        <div class="item">
+                            <h3>{{ venta.nombreproducto }}</h3>
+                            <p><strong>Estado:</strong> {{ venta.estadoproducto }}</p>
+                            <p><strong>Precio:</strong> ${{ venta.valordelbien }}</p>
+                            <p>{{ venta.descripcion }}</p>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>No hay ventas configuradas.</p>
+                {% endif %}
+            </div>
+
+            <script>
+            function printSelectedSections() {
+                // Obtener los checkboxes seleccionados
+                const checkboxes = document.querySelectorAll('.section-toggle:checked');
+                const selectedValues = Array.from(checkboxes).map(cb => cb.value);
+
+                // Si no hay nada seleccionado, mostrar alerta
+                if (selectedValues.length === 0) {
+                    alert('Por favor, selecciona al menos una sección para imprimir.');
+                    return;
+                }
+
+                // Ocultar todas las secciones (incluye info personales)
+                document.querySelectorAll('.personal-info, .contact-info, .address-info, .section').forEach(el => {
+                    el.style.display = 'none';
                 });
-                this.setAttribute('aria-expanded', (!expanded).toString());
-                this.textContent = expanded ? 'Mostrar Información Personal' : 'Ocultar Información Personal';
-            });
-        }
-        </script>
+
+                // Mostrar solo las seleccionadas
+                selectedValues.forEach(value => {
+                    document.querySelectorAll('.' + value).forEach(el => {
+                        el.style.display = 'block';
+                    });
+                });
+
+                // Esperar un poco para que el navegador actualice el DOM
+                setTimeout(() => {
+                    window.print();
+
+                    // Restaurar la visibilidad después de imprimir
+                    document.querySelectorAll('.personal-info, .contact-info, .address-info, .section').forEach(el => {
+                        el.style.display = 'block';
+                    });
+                }, 100);
+            }
+
+            // Toggle personal info visibility
+            const toggleBtn = document.getElementById('toggle-personal');
+            if (toggleBtn) {
+                toggleBtn.addEventListener('click', function() {
+                    const sections = document.querySelectorAll('.personal-info, .contact-info, .address-info');
+                    const expanded = this.getAttribute('aria-expanded') === 'true';
+                    sections.forEach(el => {
+                        if (expanded) {
+                            el.classList.add('info-hidden');
+                        } else {
+                            el.classList.remove('info-hidden');
+                        }
+                    });
+                    this.setAttribute('aria-expanded', (!expanded).toString());
+                    this.textContent = expanded ? 'Mostrar Información Personal' : 'Ocultar Información Personal';
+                });
+            }
+            </script>
+        </div>
     </div>
 </body>
 </html>
