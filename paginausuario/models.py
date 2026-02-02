@@ -49,6 +49,34 @@ class DatosPersonales(models.Model):
     class Meta:
         db_table = 'datospersonales'
 
+    def save(self, *args, **kwargs):
+        """Override save to convert uploaded profile images to JPEG (.jpg) and ensure consistent format."""
+        from PIL import Image
+        import os
+        from django.core.files.base import ContentFile
+        from io import BytesIO
+
+        # If a new image was uploaded, convert it to JPEG
+        if self.foto_perfil and not str(self.foto_perfil).lower().endswith('.jpg'):
+            try:
+                img = Image.open(self.foto_perfil)
+                rgb_im = img.convert('RGB')  # convert PNG/others with alpha to RGB
+                buffer = BytesIO()
+                rgb_im.save(buffer, format='JPEG', quality=90)
+                buffer.seek(0)
+
+                # Create a new filename with .jpg extension
+                base, _ = os.path.splitext(self.foto_perfil.name)
+                new_name = f"{base}.jpg"
+
+                # Replace the file with the converted JPEG
+                self.foto_perfil.save(new_name, ContentFile(buffer.read()), save=False)
+            except Exception:
+                # If conversion fails, ignore and keep original file (will still work if it's an image)
+                pass
+
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return f"{self.nombres} {self.apellidos}"
 
