@@ -176,7 +176,9 @@
         <div class="header">
             <div class="header-content">
                 {% if perfil.foto_perfil %}
-                <img src="{{ perfil.foto_perfil.url }}" alt="Foto de perfil" class="profile-photo">
+                {% if perfil.foto_perfil %}
+                    <img src="{{ perfil.foto_perfil.url }}" alt="Foto de perfil" class="profile-photo">
+                {% endif %}
                 {% endif %}
                 <h1>{{ perfil.nombres }} {{ perfil.apellidos }}</h1>
                 <p>{{ perfil.descripcionperfil }}</p>
