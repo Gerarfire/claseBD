@@ -114,18 +114,29 @@
         .item p {
             margin: 5px 0;
         }
-        .pdf-button {
+        /* Botón consistente con el resto de secciones */
+        .download-btn {
             display: inline-block;
-            background: #27ae60;
+            background: #3498db;
             color: white;
-            padding: 10px 20px;
+            padding: 12px 24px;
             text-decoration: none;
             border-radius: 5px;
+            font-weight: 500;
             margin-top: 20px;
-            transition: background 0.3s ease;
         }
-        .pdf-button:hover {
-            background: #229954;
+        .download-btn:hover {
+            background: #00c6fb;
+        }
+        .back-link {
+            display: inline-block;
+            color: #2c3e50;
+            text-decoration: none;
+            margin-top: 20px;
+            font-weight: 500;
+        }
+        .back-link:hover {
+            text-decoration: underline;
         }
         .no-items {
             text-align: center;
@@ -169,7 +180,7 @@
                 background: white;
                 color: black;
             }
-            .nav, .pdf-button {
+            .nav, .download-btn, .back-link {
                 display: none;
             }
             .container {
@@ -187,6 +198,8 @@
                     <img src="{{ perfil.foto_perfil_url }}" alt="Foto de perfil" class="profile-photo">
                 {% elif perfil.foto_perfil %}
                     <img src="{{ perfil.foto_perfil.url }}" alt="Foto de perfil" class="profile-photo">
+                {% else %}
+                    <img src="https://i.pinimg.com/originals/e8/6f/46/e86f46ea77c37158aac339a6a4cbf69e.jpg" alt="Foto de perfil" class="profile-photo">
                 {% endif %}
                 <h1>{{ perfil.nombres }} {{ perfil.apellidos }}</h1>
                 <p>{{ perfil.descripcionperfil }}</p>
@@ -242,7 +255,9 @@
                 </div>
                 {% endfor %}
             </div>
-            <button onclick="printSelectedVentas()" class="download-btn">Descargar Seleccionados</button>
+            <button type="button" onclick="printSelectedVentas()" class="download-btn">Descargar Seleccionados</button>
+            <br>
+            <a href="{% url 'hoja_vida' %}" class="back-link">← Volver al Inicio</a>
             <script>
             function printSelectedVentas() {
                 const checkboxes = document.querySelectorAll('.venta-checkbox:checked');
