@@ -303,5 +303,28 @@ class VentaGarage(models.Model):
     def __str__(self):
         return f"{self.nombreproducto} - {self.estadoproducto}"
 
+    def clean(self):
+        from django.core.exceptions import ValidationError
+        # Validate imagen if present
+        if self.imagen:
+            try:
+                file = self.imagen
+                max_size = 5 * 1024 * 1024
+                if hasattr(file, 'size') and file.size > max_size:
+                    raise ValidationError('La imagen es demasiado grande (máx 5 MB).')
+                from PIL import Image
+                file.seek(0)
+                img = Image.open(file)
+                fmt = (img.format or '').upper()
+                if fmt not in ('JPEG', 'PNG'):
+                    raise ValidationError('Formato de imagen no soportado. Use JPEG o PNG.')
+                max_dim = 4000
+                if img.width > max_dim or img.height > max_dim:
+                    raise ValidationError('Dimensiones demasiado grandes (máx 4000x4000).')
+            except ValidationError:
+                raise
+            except Exception:
+                raise ValidationError('No se pudo procesar la imagen.')
+
 
 

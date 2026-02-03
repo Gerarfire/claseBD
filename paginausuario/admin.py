@@ -1,5 +1,6 @@
 from django.contrib import admin
 from .models import DatosPersonales, ExperienciaLaboral, Reconocimiento, CursoRealizado, ProductoAcademico, ProductoLaboral, VentaGarage
+from .forms import VentaGarageForm
 
 # Register your models here.
 
@@ -132,6 +133,7 @@ class ProductoLaboralAdmin(admin.ModelAdmin):
 
 @admin.register(VentaGarage)
 class VentaGarageAdmin(admin.ModelAdmin):
+    form = VentaGarageForm
     list_display = ('nombreproducto', 'estadoproducto', 'imagen_preview', 'descripcion', 'valordelbien', 'activarparaqueseveaenfront')
     list_filter = ('activarparaqueseveaenfront', 'estadoproducto')
     list_editable = ('activarparaqueseveaenfront',)
@@ -144,10 +146,31 @@ class VentaGarageAdmin(admin.ModelAdmin):
     from django.utils.html import format_html
 
     def imagen_preview(self, obj):
-        if obj.imagen:
-            return format_html("<img src='{}' width='80' style='object-fit:cover;border-radius:6px;'/>", obj.imagen.url)
+        try:
+            if obj.imagen and getattr(obj.imagen, 'url', None):
+                return format_html("<img src='{}' width='80' style='object-fit:cover;border-radius:6px;'/>", obj.imagen.url)
+        except Exception:
+            # Evitar que errores del backend de storage rompan el admin
+            return '(error al mostrar imagen)'
         return '(sin imagen)'
     imagen_preview.short_description = 'Imagen'
+
+    def save_model(self, request, obj, form, change):
+        from django.contrib import messages
+        import logging
+        from django.core.exceptions import ValidationError
+        logger = logging.getLogger(__name__)
+        try:
+            # Ejecutar validación del modelo antes de guardar para capturar problemas de imagen
+            obj.full_clean()
+            super().save_model(request, obj, form, change)
+        except ValidationError as e:
+            logger.exception('Validation error saving VentaGarage')
+            self.message_user(request, '; '.join(e.messages), level=messages.ERROR)
+        except Exception as e:
+            logger.exception('Error guardando VentaGarage')
+            # Mostrar mensaje amable en admin en vez de 500
+            self.message_user(request, f"Error al guardar la venta: {e}", level=messages.ERROR)
 
     def activar_items(self, request, queryset):
         queryset.update(activarparaqueseveaenfront=True)
