@@ -1,5 +1,10 @@
 set -o errexit
 
+# Upgrade pip/setuptools/wheel so that modern manylinux wheels (e.g. Pillow) are
+# recognized and installed as wheels instead of forcing a source build.
+python -m pip install --upgrade pip setuptools wheel
+pip --version
+
 pip install -r requirements.txt
 
 python manage.py collectstatic --noinput
