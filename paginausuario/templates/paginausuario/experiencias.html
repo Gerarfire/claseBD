@@ -144,7 +144,9 @@
         <div class="header">
             <div class="header-content">
                 {% if perfil.foto_perfil %}
-                {% if perfil.foto_perfil %}
+                {% if perfil.foto_perfil_url %}
+                    <img src="{{ perfil.foto_perfil_url }}" alt="Foto de perfil" class="profile-photo">
+                {% elif perfil.foto_perfil %}
                     <img src="{{ perfil.foto_perfil.url }}" alt="Foto de perfil" class="profile-photo">
                 {% endif %}
                 {% else %}

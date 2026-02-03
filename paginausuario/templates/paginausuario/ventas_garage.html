@@ -183,7 +183,9 @@
     <div class="container">
         <div class="header">
             <div class="header-content">
-                {% if perfil.foto_perfil %}
+                {% if perfil.foto_perfil_url %}
+                    <img src="{{ perfil.foto_perfil_url }}" alt="Foto de perfil" class="profile-photo">
+                {% elif perfil.foto_perfil %}
                     <img src="{{ perfil.foto_perfil.url }}" alt="Foto de perfil" class="profile-photo">
                 {% endif %}
                 <h1>{{ perfil.nombres }} {{ perfil.apellidos }}</h1>
@@ -218,7 +220,9 @@
                 {% for venta in ventas_garage %}
                 <div class="item venta-item" data-id="{{ venta.id }}">
                     <h3>{{ venta.nombreproducto }}</h3>
-                    {% if venta.imagen %}
+                    {% if venta.imagen_url %}
+                    <p><img src="{{ venta.imagen_url }}" alt="{{ venta.nombreproducto }}" class="venta-photo"/></p>
+                    {% elif venta.imagen %}
                     <p><img src="{{ venta.imagen.url }}" alt="{{ venta.nombreproducto }}" class="venta-photo"/></p>
                     {% endif %}
                     <p>

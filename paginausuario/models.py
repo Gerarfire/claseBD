@@ -45,6 +45,8 @@ class DatosPersonales(models.Model):
 
     sitioweb = models.CharField(max_length=60, blank=True, null=True)
     foto_perfil = models.ImageField(upload_to='fotos_perfil/', blank=True, null=True)
+    # Permitir configurar la foto de perfil por URL (uso preferente sobre upload si está presente)
+    foto_perfil_url = models.URLField(blank=True, null=True)
 
     class Meta:
         db_table = 'datospersonales'
@@ -53,13 +55,15 @@ class DatosPersonales(models.Model):
         """Override save to:
         - convert uploaded profile images to JPEG (.jpg) and ensure consistent format.
         - ensure there is only one profile with perfilactivo=1 (set others to 0).
+        - if foto_perfil_url is set, we leave the file field untouched (URL takes precedence for display).
         """
         from PIL import Image
         import os
         from django.core.files.base import ContentFile
         from io import BytesIO
 
-        # If a new image was uploaded, convert it to JPEG
+        # If a new image file was uploaded, convert it to JPEG
+        # NOTE: if foto_perfil_url is present we do not replace it; both can coexist but URL is used in templates
         if self.foto_perfil and not str(self.foto_perfil).lower().endswith('.jpg'):
             try:
                 img = Image.open(self.foto_perfil)
@@ -292,6 +296,8 @@ class VentaGarage(models.Model):
 
     # Nueva imagen opcional para la venta de garage
     imagen = models.ImageField(upload_to='ventas_garage/', blank=True, null=True)
+    # Soporte por URL para imágenes (permite enseñar imágenes de la web sin subir archivo)
+    imagen_url = models.URLField(blank=True, null=True)
 
     valordelbien = models.DecimalField(max_digits=5, decimal_places=2)
 
@@ -305,7 +311,7 @@ class VentaGarage(models.Model):
 
     def clean(self):
         from django.core.exceptions import ValidationError
-        # Validate imagen if present
+        # Validate imagen file if present
         if self.imagen:
             try:
                 file = self.imagen
@@ -325,6 +331,21 @@ class VentaGarage(models.Model):
                 raise
             except Exception:
                 raise ValidationError('No se pudo procesar la imagen.')
+
+        # Validate imagen_url if present: must be reachable and point to an image
+        if self.imagen_url:
+            try:
+                from urllib.request import Request, urlopen
+                from urllib.error import URLError, HTTPError
+                req = Request(self.imagen_url, method='HEAD', headers={'User-Agent': 'Mozilla/5.0'})
+                resp = urlopen(req, timeout=5)
+                ctype = resp.headers.get_content_type() if hasattr(resp.headers, 'get_content_type') else resp.headers.get('Content-Type', '')
+                if not (ctype and ctype.startswith('image')):
+                    raise ValidationError('La URL no apunta a un recurso de imagen.')
+            except (HTTPError, URLError, ValueError):
+                raise ValidationError('No se pudo acceder a la URL de la imagen.')
+            except Exception:
+                raise ValidationError('No se pudo validar la URL de la imagen.')
 
 
 

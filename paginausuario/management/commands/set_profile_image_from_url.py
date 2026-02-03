@@ -14,6 +14,7 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument('--url', required=True, help='URL de la imagen a descargar')
         parser.add_argument('--id', type=int, help='ID del perfil (idperfil). Si se omite se usa el perfil activo (perfilactivo=1)')
+        parser.add_argument('--use-url', action='store_true', help='Guardar la URL en foto_perfil_url en vez de descargar el archivo')
 
     def handle(self, *args, **options):
         url = options.get('url')
@@ -34,6 +35,29 @@ class Command(BaseCommand):
             if not perfil:
                 raise CommandError('No hay perfil activo (perfilactivo=1) y no se indicó --id')
 
+        # Si se indica --use-url, no descargamos el archivo; guardamos la URL directamente
+        use_url = options.get('use_url')
+        if use_url:
+            # Simple HEAD check para validar tipo de contenido
+            try:
+                req = Request(url, method='HEAD', headers={'User-Agent': 'Mozilla/5.0'})
+                with urlopen(req, timeout=10) as resp:
+                    ct = resp.headers.get('Content-Type', '')
+                if not (ct and ct.startswith('image')):
+                    raise CommandError('La URL no parece apuntar a una imagen.')
+            except HTTPError as e:
+                raise CommandError(f'HTTP error al validar la URL: {e.code} {e.reason}')
+            except URLError as e:
+                raise CommandError(f'Error de URL al validar la imagen: {e.reason}')
+            except Exception as e:
+                raise CommandError(f'Error al validar la URL de la imagen: {e}')
+
+            perfil.foto_perfil_url = url
+            perfil.save()
+            self.stdout.write(self.style.SUCCESS(f'URL asignada a foto_perfil de {perfil} -> {perfil.foto_perfil_url}'))
+            return
+
+        # Si no se pidió guardar URL, descargamos y guardamos el archivo (comportamiento histórico)
         self.stdout.write(f'Descargando imagen desde: {url}')
         try:
             # Some servers block default user-agent; set a simple one

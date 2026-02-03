@@ -9,7 +9,7 @@ class DatosPersonalesAdmin(admin.ModelAdmin):
     list_display = ('nombres', 'apellidos', 'descripcionperfil', 'numerocedula', 'sexo', 'perfilactivo')
     fieldsets = (
         ('Información Básica', {
-            'fields': ('nombres', 'apellidos', 'descripcionperfil', 'foto_perfil', 'perfilactivo')
+            'fields': ('nombres', 'apellidos', 'descripcionperfil', 'foto_perfil', 'foto_perfil_url', 'perfilactivo')
         }),
         ('Información Personal', {
             'fields': ('nacionalidad', 'lugarnacimiento', 'fechanacimiento', 'numerocedula', 'sexo', 'estadocivil', 'licenciaconducir')
@@ -140,7 +140,22 @@ class VentaGarageAdmin(admin.ModelAdmin):
     search_fields = ('nombreproducto', 'descripcion')
     ordering = ('-nombreproducto',)
     readonly_fields = ('imagen_preview',)
-    fields = ('idperfilconqueestaactivo', 'nombreproducto', 'estadoproducto', 'descripcion', 'imagen', 'valordelbien', 'activarparaqueseveaenfront')
+    fields = ('idperfilconqueestaactivo', 'nombreproducto', 'estadoproducto', 'descripcion', 'imagen', 'imagen_url', 'valordelbien', 'activarparaqueseveaenfront')
+
+    from django.utils.html import format_html
+
+    def imagen_preview(self, obj):
+        try:
+            # Preferir URL externa si se proporcionó
+            if getattr(obj, 'imagen_url', None):
+                return format_html("<img src='{}' width='80' style='object-fit:cover;border-radius:6px;'/>", obj.imagen_url)
+            if obj.imagen and getattr(obj.imagen, 'url', None):
+                return format_html("<img src='{}' width='80' style='object-fit:cover;border-radius:6px;'/>", obj.imagen.url)
+        except Exception:
+            # Evitar que errores del backend de storage rompan el admin
+            return '(error al mostrar imagen)'
+        return '(sin imagen)'
+    imagen_preview.short_description = 'Imagen'
     actions = ['activar_items', 'desactivar_items']
 
     from django.utils.html import format_html

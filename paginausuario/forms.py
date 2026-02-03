@@ -9,7 +9,7 @@ class DatosPersonalesForm(forms.ModelForm):
     """Formulario para datos personales"""
     class Meta:
         model = DatosPersonales
-        fields = ['nombres', 'apellidos', 'descripcionperfil', 'foto_perfil', 'telefonoconvencional', 'telefonofijo', 'direcciondomiciliaria', 'sitioweb']
+        fields = ['nombres', 'apellidos', 'descripcionperfil', 'foto_perfil', 'foto_perfil_url', 'telefonoconvencional', 'telefonofijo', 'direcciondomiciliaria', 'sitioweb']
 
 
 class ExperienciaLaboralForm(forms.ModelForm):
@@ -51,7 +51,7 @@ class VentaGarageForm(forms.ModelForm):
     """Formulario para ventas garage con soporte de imagen y validación"""
     class Meta:
         model = __import__('paginausuario.models', fromlist=['VentaGarage']).VentaGarage
-        fields = ['nombreproducto', 'estadoproducto', 'descripcion', 'imagen', 'valordelbien', 'activarparaqueseveaenfront']
+        fields = ['nombreproducto', 'estadoproducto', 'descripcion', 'imagen', 'imagen_url', 'valordelbien', 'activarparaqueseveaenfront']
         widgets = {
             'descripcion': forms.Textarea(attrs={'rows':2}),
         }
@@ -85,3 +85,21 @@ class VentaGarageForm(forms.ModelForm):
             except Exception:
                 pass
         return img
+
+    def clean_imagen_url(self):
+        url = self.cleaned_data.get('imagen_url')
+        if not url:
+            return url
+        try:
+            from urllib.request import Request, urlopen
+            from urllib.error import URLError, HTTPError
+            req = Request(url, method='HEAD', headers={'User-Agent': 'Mozilla/5.0'})
+            resp = urlopen(req, timeout=5)
+            ctype = resp.headers.get_content_type() if hasattr(resp.headers, 'get_content_type') else resp.headers.get('Content-Type', '')
+            if not (ctype and ctype.startswith('image')):
+                raise forms.ValidationError('La URL no apunta a un recurso de imagen.')
+        except (HTTPError, URLError, ValueError):
+            raise forms.ValidationError('No se pudo acceder a la URL proporcionada.')
+        except Exception:
+            raise forms.ValidationError('No se pudo validar la URL de la imagen.')
+        return url
