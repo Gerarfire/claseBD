@@ -5,6 +5,14 @@ set -o errexit
 python -m pip install --upgrade pip setuptools wheel
 pip --version
 
+# Instalar dependencias del sistema necesarias para compilar/instalar Pillow y
+# otras librerías de imágenes en entornos Debian/Ubuntu (Render builders).
+# Si tu builder no usa apt, puedes quitar estas líneas.
+apt-get update && apt-get install -y build-essential libjpeg-dev zlib1g-dev libpng-dev libfreetype6-dev liblcms2-dev libopenjp2-7-dev libtiff5-dev pkg-config
+
+# Asegurar setuptools_scm para evitar errores de versión durante el build
+python -m pip install --upgrade setuptools_scm
+
 pip install -r requirements.txt
 
 python manage.py collectstatic --noinput
