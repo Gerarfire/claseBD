@@ -36,12 +36,21 @@ class Command(BaseCommand):
         else:
             self.stdout.write('Perfil principal ya existe')
 
-        # Añadir imagen de ejemplo al perfil si no existe (pequeña PNG de 1x1)
+        # Añadir imagen de ejemplo al perfil si no existe (imagen de placeholder más visible)
         if not perfil.foto_perfil:
-            sample_b64 = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGNgYAAAAAMAAWgmWQ0AAAAASUVORK5CYII="
-            image_data = base64.b64decode(sample_b64)
-            perfil.foto_perfil.save('sample_perfil.png', ContentFile(image_data), save=True)
-            self.stdout.write(self.style.SUCCESS('Imagen de perfil de ejemplo añadida'))
+            try:
+                from urllib.request import urlopen
+                url = 'https://via.placeholder.com/240x240.png?text=Perfil'
+                resp = urlopen(url, timeout=5)
+                data = resp.read()
+                perfil.foto_perfil.save('sample_perfil.png', ContentFile(data), save=True)
+                self.stdout.write(self.style.SUCCESS('Imagen de perfil de ejemplo añadida (descargada)'))
+            except Exception:
+                # Fallback a 1x1 si no hay red
+                sample_b64 = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGNgYAAAAAMAAWgmWQ0AAAAASUVORK5CYII="
+                image_data = base64.b64decode(sample_b64)
+                perfil.foto_perfil.save('sample_perfil.png', ContentFile(image_data), save=True)
+                self.stdout.write(self.style.SUCCESS('Imagen de perfil de ejemplo añadida (fallback)'))
 
         # Crear experiencia laboral de ejemplo
         exp, created = ExperienciaLaboral.objects.get_or_create(
@@ -141,11 +150,19 @@ class Command(BaseCommand):
 
         if created:
             self.stdout.write(self.style.SUCCESS('Venta de garage creada'))
-            # Añadir imagen de ejemplo a la venta si no existe
+            # Añadir imagen de ejemplo a la venta si no existe (placeholder)
             if not venta.imagen:
-                sample_b64 = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGNgYAAAAAMAAWgmWQ0AAAAASUVORK5CYII="
-                image_data = base64.b64decode(sample_b64)
-                venta.imagen.save('sample_venta.png', ContentFile(image_data), save=True)
-                self.stdout.write(self.style.SUCCESS('Imagen de venta de ejemplo añadida'))
+                try:
+                    from urllib.request import urlopen
+                    url = 'https://via.placeholder.com/320x240.png?text=Venta'
+                    resp = urlopen(url, timeout=5)
+                    data = resp.read()
+                    venta.imagen.save('sample_venta.png', ContentFile(data), save=True)
+                    self.stdout.write(self.style.SUCCESS('Imagen de venta de ejemplo añadida (descargada)'))
+                except Exception:
+                    sample_b64 = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGNgYAAAAAMAAWgmWQ0AAAAASUVORK5CYII="
+                    image_data = base64.b64decode(sample_b64)
+                    venta.imagen.save('sample_venta.png', ContentFile(image_data), save=True)
+                    self.stdout.write(self.style.SUCCESS('Imagen de venta de ejemplo añadida (fallback)'))
 
         self.stdout.write(self.style.SUCCESS('Datos de ejemplo creados exitosamente'))

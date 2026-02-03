@@ -68,11 +68,12 @@ class DatosPersonales(models.Model):
                 rgb_im.save(buffer, format='JPEG', quality=90)
                 buffer.seek(0)
 
-                # Create a new filename with .jpg extension
+                # Create a new filename with .jpg extension using only the basename to avoid double folder nesting
                 base, _ = os.path.splitext(self.foto_perfil.name)
-                new_name = f"{base}.jpg"
+                filename = os.path.basename(base)
+                new_name = f"{filename}.jpg"
 
-                # Replace the file with the converted JPEG
+                # Replace the file with the converted JPEG (upload_to will add the folder)
                 self.foto_perfil.save(new_name, ContentFile(buffer.read()), save=False)
             except Exception:
                 # If conversion fails, ignore and keep original file (will still work if it's an image)
