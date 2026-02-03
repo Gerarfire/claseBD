@@ -1,6 +1,8 @@
 from django.core.management.base import BaseCommand
 from paginausuario.models import DatosPersonales, ExperienciaLaboral, Reconocimiento, CursoRealizado, ProductoAcademico, ProductoLaboral, VentaGarage
 from datetime import date
+from django.core.files.base import ContentFile
+import base64
 
 class Command(BaseCommand):
     help = 'Populate database with sample data'
@@ -33,6 +35,13 @@ class Command(BaseCommand):
             self.stdout.write(self.style.SUCCESS('Perfil principal creado'))
         else:
             self.stdout.write('Perfil principal ya existe')
+
+        # Añadir imagen de ejemplo al perfil si no existe (pequeña PNG de 1x1)
+        if not perfil.foto_perfil:
+            sample_b64 = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGNgYAAAAAMAAWgmWQ0AAAAASUVORK5CYII="
+            image_data = base64.b64decode(sample_b64)
+            perfil.foto_perfil.save('sample_perfil.png', ContentFile(image_data), save=True)
+            self.stdout.write(self.style.SUCCESS('Imagen de perfil de ejemplo añadida'))
 
         # Crear experiencia laboral de ejemplo
         exp, created = ExperienciaLaboral.objects.get_or_create(
@@ -132,5 +141,11 @@ class Command(BaseCommand):
 
         if created:
             self.stdout.write(self.style.SUCCESS('Venta de garage creada'))
+            # Añadir imagen de ejemplo a la venta si no existe
+            if not venta.imagen:
+                sample_b64 = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGNgYAAAAAMAAWgmWQ0AAAAASUVORK5CYII="
+                image_data = base64.b64decode(sample_b64)
+                venta.imagen.save('sample_venta.png', ContentFile(image_data), save=True)
+                self.stdout.write(self.style.SUCCESS('Imagen de venta de ejemplo añadida'))
 
         self.stdout.write(self.style.SUCCESS('Datos de ejemplo creados exitosamente'))

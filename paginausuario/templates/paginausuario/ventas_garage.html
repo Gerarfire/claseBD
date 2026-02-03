@@ -103,6 +103,14 @@
             margin-top: 0;
             font-size: 1.4em;
         }
+        .venta-photo {
+            max-width: 160px;
+            max-height: 120px;
+            object-fit: cover;
+            border-radius: 8px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+            margin-bottom: 10px;
+        }
         .item p {
             margin: 5px 0;
         }
@@ -212,6 +220,9 @@
                 {% for venta in ventas_garage %}
                 <div class="item venta-item" data-id="{{ venta.id }}">
                     <h3>{{ venta.nombreproducto }}</h3>
+                    {% if venta.imagen %}
+                    <p><img src="{{ venta.imagen.url }}" alt="{{ venta.nombreproducto }}" class="venta-photo"/></p>
+                    {% endif %}
                     <p>
                         <strong>Estado:</strong>
                         {% if venta.estadoproducto|upper == "BUENO" %}

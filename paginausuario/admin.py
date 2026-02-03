@@ -132,12 +132,22 @@ class ProductoLaboralAdmin(admin.ModelAdmin):
 
 @admin.register(VentaGarage)
 class VentaGarageAdmin(admin.ModelAdmin):
-    list_display = ('nombreproducto', 'estadoproducto', 'descripcion', 'valordelbien', 'activarparaqueseveaenfront')
+    list_display = ('nombreproducto', 'estadoproducto', 'imagen_preview', 'descripcion', 'valordelbien', 'activarparaqueseveaenfront')
     list_filter = ('activarparaqueseveaenfront', 'estadoproducto')
     list_editable = ('activarparaqueseveaenfront',)
     search_fields = ('nombreproducto', 'descripcion')
     ordering = ('-nombreproducto',)
+    readonly_fields = ('imagen_preview',)
+    fields = ('idperfilconqueestaactivo', 'nombreproducto', 'estadoproducto', 'descripcion', 'imagen', 'valordelbien', 'activarparaqueseveaenfront')
     actions = ['activar_items', 'desactivar_items']
+
+    from django.utils.html import format_html
+
+    def imagen_preview(self, obj):
+        if obj.imagen:
+            return format_html("<img src='{}' width='80' style='object-fit:cover;border-radius:6px;'/>", obj.imagen.url)
+        return '(sin imagen)'
+    imagen_preview.short_description = 'Imagen'
 
     def activar_items(self, request, queryset):
         queryset.update(activarparaqueseveaenfront=True)

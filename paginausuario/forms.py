@@ -45,3 +45,13 @@ class ProductoLaboralForm(forms.ModelForm):
     class Meta:
         model = ProductoLaboral
         fields = ['titulo', 'descripcion', 'enlace', 'fecha_publicacion']
+
+
+class VentaGarageForm(forms.ModelForm):
+    """Formulario para ventas garage con soporte de imagen"""
+    class Meta:
+        model = __import__('paginausuario.models', fromlist=['VentaGarage']).VentaGarage
+        fields = ['nombreproducto', 'estadoproducto', 'descripcion', 'imagen', 'valordelbien', 'activarparaqueseveaenfront']
+        widgets = {
+            'descripcion': forms.Textarea(attrs={'rows':2}),
+        }

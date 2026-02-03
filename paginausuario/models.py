@@ -289,6 +289,9 @@ class VentaGarage(models.Model):
 
     descripcion = models.CharField(max_length=100)
 
+    # Nueva imagen opcional para la venta de garage
+    imagen = models.ImageField(upload_to='ventas_garage/', blank=True, null=True)
+
     valordelbien = models.DecimalField(max_digits=5, decimal_places=2)
 
     activarparaqueseveaenfront = models.BooleanField(default=True, verbose_name="Activar para que se vea en front")
