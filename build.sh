@@ -17,6 +17,16 @@ else
   fi
 fi
 
+# Check for known incompatibilities: Django 6 requires Python >=3.12
+if grep -q "^Django==6" requirements.txt 2>/dev/null; then
+  # If we're on <3.12 warn and suggest changing Python or the Django pin
+  PY_MAJOR=$(python -c "import sys;print(sys.version_info.major)")
+  PY_MINOR=$(python -c "import sys;print(sys.version_info.minor)")
+  if [ "$PY_MAJOR" -lt 3 ] || ( [ "$PY_MAJOR" -eq 3 ] && [ "$PY_MINOR" -lt 12 ] ); then
+    echo "WARNING: requirements.txt pins Django 6.x but current Python is $PYVER. Django 6 requires Python >= 3.12. Either set PYTHON_VERSION to 3.12+ in Render, or pin Django to a 4.2.x release in requirements.txt."
+  fi
+fi
+
 # Upgrade pip/setuptools/wheel so that modern manylinux wheels (e.g. Pillow) are
 # recognized and installed as wheels instead of forcing a source build.
 python -m pip install --upgrade pip setuptools wheel
