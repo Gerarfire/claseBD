@@ -1,5 +1,22 @@
 set -o errexit
 
+# Check Python version and recommend 3.11.x to avoid build issues with compiled
+# image libraries (Pillow). This prints a clear instruction for Render env var.
+echo "Detected python: $(python -V 2>&1)"
+PYVER=$(python -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
+if [ -n "$PYTHON_VERSION" ]; then
+  case "$PYTHON_VERSION" in
+    3.11.*)
+      echo "Using recommended PYTHON_VERSION=$PYTHON_VERSION" ;;
+    *)
+      echo "WARNING: PYTHON_VERSION is set to $PYTHON_VERSION. For more reliable builds set PYTHON_VERSION=3.11.15 (Render > Service > Environment)" ;;
+  esac
+else
+  if [ "$PYVER" != "3.11" ]; then
+    echo "WARNING: Detected Python $PYVER. Recomendado usar Python 3.11.x en Render (setear PYTHON_VERSION=3.11.15) para evitar errores al compilar dependencias como Pillow."
+  fi
+fi
+
 # Upgrade pip/setuptools/wheel so that modern manylinux wheels (e.g. Pillow) are
 # recognized and installed as wheels instead of forcing a source build.
 python -m pip install --upgrade pip setuptools wheel
